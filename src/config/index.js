@@ -6,25 +6,25 @@ const env = import.meta.env.MODE || 'prod'
 const EnvConfig = {
     // 开发环境
     dev: {
-        baseApi: 'http://ceshi13.dishait.cn',
-        mockApi: 'https://www.fastmock.site/mock/1ac7da2fb78f6ad7939c6bfbf4ebbecf/api'
+        baseApi: 'http://ceshi13.dishait.cn/admin',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
     },
     // 测试环境
     test: {
-        baseApi: 'http://ceshi13.dishait.cn',
-        mockApi: 'https://www.fastmock.site/mock/1ac7da2fb78f6ad7939c6bfbf4ebbecf/api'
+        baseApi: 'http://ceshi13.dishait.cn/admin',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
     },
     // 生产环境
     prod: {
-        baseApi: 'http://ceshi13.dishait.cn',
-        mockApi: 'https://www.fastmock.site/mock/1ac7da2fb78f6ad7939c6bfbf4ebbecf/api'
+        baseApi: 'http://ceshi13.dishait.cn/admin',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
     }
 }
 export default {
     // 环境
     env,
     // 是否启动假数据
-    mock: false,
+    mock: true,
     // 命名空间 storage
     namespace: 'shopManager',
     // 对应环境的配置

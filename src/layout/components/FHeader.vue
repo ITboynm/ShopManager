@@ -6,8 +6,9 @@
             </el-icon>
             标题
         </span>
-        <el-icon class="icon-btn">
-            <Fold />
+        <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+            <Fold v-if="$store.state.asideWidth == '250px'" />
+            <Expand v-else/>
         </el-icon>
         <el-tooltip effect="dark" content="刷新" placement="top-start">
             <el-icon class="icon-btn" @click="handleRefresh">
@@ -24,7 +25,7 @@
             <el-dropdown class="dropdown" @command="handleCommand">
                 <span class="flex items-center">
                     <el-avatar :size="25" :src="$store.state.userInfo.avatar" class="mr-2" />
-                    {{$store.state.userInfo.username}}
+                    {{ $store.state.userInfo.username }}
                     <el-icon class="el-icon--right">
                         <arrow-down />
                     </el-icon>

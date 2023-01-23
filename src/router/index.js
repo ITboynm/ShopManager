@@ -12,8 +12,16 @@ const routes = [
             component: Home,
             meta: {
                 title: '后台首页'
-            },
-        }]
+            }
+        },
+        {
+            path: '/good/list',
+            component: () => import(/* webpackChunkName: "login" */ '@/views/good/List.vue'),
+            meta: {
+                title: '商品管理'
+            }
+        }
+        ]
     },
     {
         name: 'login',

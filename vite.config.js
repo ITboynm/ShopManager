@@ -15,7 +15,10 @@ export default defineConfig({
     port: 8003,
     proxy: {
       "/admin": {
-        target: "http://ceshi13.dishait.cn",
+        // 线上的接口
+        // target: "http://ceshi13.dishait.cn",
+        // mock接口
+        target: "https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694",
         changeOrigin: true
       }
     }
