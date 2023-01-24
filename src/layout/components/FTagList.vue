@@ -1,6 +1,6 @@
 <template>
     <div id="">
-标签导航
+        标签导航
     </div>
 </template>
 
@@ -8,5 +8,5 @@
 </script>
 
 <style scoped lang='scss'>
-  
+
 </style>
