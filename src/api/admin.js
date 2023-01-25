@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-
+// 管理员接口
 export default {
     // 登录
     login(params) {
@@ -16,7 +16,7 @@ export default {
             url: '/logout',
             method: 'post',
             data: params,
-            // mock: false
+            mock: false
         })
     },
     // 获取管理员信息
@@ -34,7 +34,7 @@ export default {
             url: '/updatepassword',
             method: 'post',
             data: params,
-            // mock: false
+            mock: true
         })
     },
 }

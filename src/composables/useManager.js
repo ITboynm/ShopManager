@@ -1,5 +1,5 @@
 import { ref, reactive, toRaw } from 'vue'
-import managerApi from '@/api/manager'
+import adminApi from '@/api/admin'
 import { showModal, notification } from '@/utils/utils'
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -43,7 +43,7 @@ const useRepassword = () => {
                 return false;
             }
             formDrawerRef.value.showLoading()
-            managerApi.updatePassword(toRaw(formData)).then(res => {
+            adminApi.updatePassword(toRaw(formData)).then(res => {
                 notification('修改密码成功,请重新登录')
                 store.dispatch('logout').finally(() => {
                     router.push('/login')

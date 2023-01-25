@@ -1,10 +1,10 @@
-import managerApi from '@/api/manager'
+import adminApi from '@/api/admin'
 import operateToken from '@/utils/auth'
 export default {
     // 登录
     async login({ commit }, params) {
         try {
-            let token = await managerApi.login(params)
+            let token = await adminApi.login(params)
             operateToken.setToken(token)
             return Promise.resolve(token)
         } catch (error) {
@@ -15,7 +15,7 @@ export default {
     // 退出登录
     async logout({ commit }) {
         try {
-            let res = await managerApi.logout()
+            let res = await adminApi.logout()
             // 移除cookie里面的token
             operateToken.removeToken()
             // 清除用户状态
@@ -29,7 +29,7 @@ export default {
     // 获取用户信息
     async getUserInfo({ commit }) {
         try {
-            const userInfo = await managerApi.getUserInfo()
+            const userInfo = await adminApi.getUserInfo()
             commit('saveUserInfo', userInfo)
             return Promise.resolve(userInfo)
         } catch (error) {

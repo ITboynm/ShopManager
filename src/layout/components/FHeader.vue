@@ -4,11 +4,11 @@
             <el-icon class="mr-1">
                 <Discount />
             </el-icon>
-            标题
+            旺旺商城
         </span>
         <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
             <Fold v-if="$store.state.asideWidth == '250px'" />
-            <Expand v-else/>
+            <Expand v-else />
         </el-icon>
         <el-tooltip effect="dark" content="刷新" placement="top-start">
             <el-icon class="icon-btn" @click="handleRefresh">
@@ -70,7 +70,7 @@ const { isFullscreen, toggle } = useFullscreen()
 // 修改密码
 const { formDrawerRef, formData, rules, formRef, onSubmit, openRePasswordForm } = useRepassword()
 //  退出登录
-const { logout } = useLogout()
+const logout = useLogout()
 // 刷新
 const handleRefresh = () => location.reload()
 // 下拉触发
