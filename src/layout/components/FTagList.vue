@@ -1,8 +1,8 @@
 <template>
     <div id="f-tag-list" :style="{ left: $store.state.asideWidth }">
-        <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs" closable @tab-remove="removeTab"
-            style="min-width:100px;">
-            <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+        <el-tabs v-model="activeTab" type="card" class="demo-tabs" @tab-remove="removeTab" style="min-width:100px;">
+            <el-tab-pane :closable="item.path != '/'" v-for="item in tabList" :key="item.path" :label="item.title"
+                :name="item.path">
                 <!-- {{ item.content }} -->
             </el-tab-pane>
         </el-tabs>
@@ -29,128 +29,40 @@
 
 <script setup>
 import { ref } from 'vue'
-
-let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+const route = useRoute()
+// 选中的tab
+const activeTab = ref(route.path)
+const tabList = ref([
     {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
+        title: '后台首页',
+        path: '/',
     },
     {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
+        title: '商品管理',
+        path: '/goods/list',
+    }
 ])
 
-const addTab = (targetName) => {
-    const newTabName = `${++tabIndex}`
-    editableTabs.value.push({
-        title: 'New Tab',
-        name: newTabName,
-        content: 'New Tab content',
-    })
-    editableTabsValue.value = newTabName
-}
+// 删除tab栏事件
 const removeTab = (targetName) => {
-    const tabs = editableTabs.value
-    let activeName = editableTabsValue.value
-    if (activeName === targetName) {
-        tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-                const nextTab = tabs[index + 1] || tabs[index - 1]
-                if (nextTab) {
-                    activeName = nextTab.name
-                }
-            }
-        })
-    }
 
-    editableTabsValue.value = activeName
-    editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
 }
+/**
+ * 自动添加tab栏事件
+ * params {Object} - title 路由名字 path 路由路径
+ * 
+*/
+const addTab = () => {
+
+}
+// 监听路由变化
+onBeforeRouteUpdate((to, from) => {
+    addTab({
+        title: to.meta.title,
+        path: to.path
+    })
+})
 </script>
 
 <style scoped lang='scss'>
@@ -159,6 +71,8 @@ const removeTab = (targetName) => {
     top: 60px;
     right: 0;
     height: 44px;
+    box-sizing: border-box;
+    transition: all .5s;
 
     .tag-btn {
         @apply bg-white rounded ml-auto flex items-center justify-center px-2;
@@ -168,7 +82,7 @@ const removeTab = (targetName) => {
 
     :deep(.el-tabs__header) {
         border-bottom: none;
-        @apply mb-0 ;
+        @apply mb-0;
     }
 
     :deep(.el-tabs__nav) {
@@ -180,6 +94,26 @@ const removeTab = (targetName) => {
         border: none !important;
         height: 32px;
         line-height: 32px;
+    }
+
+    :deep(.el-tabs) {
+        --el-tabs-header-height: auto;
+    }
+
+    :deep(.el-tabs__nav-next),
+    :deep(.el-tabs__nav-prev) {
+        transform: translateY(-50%);
+        top: 50%;
+    }
+
+    :deep(.is-disabled) {
+        cursor: not-allowed;
+        @apply text-gray-300;
+    }
+
+    :deep(.el-tabs__nav-wrap) {
+        margin-bottom: 0;
+        margin-right: 8px;
     }
 }
 </style>
