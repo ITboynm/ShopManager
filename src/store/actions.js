@@ -19,7 +19,7 @@ export default {
             // 移除cookie里面的token
             operateToken.removeToken()
             // 清除用户状态
-            commit('saveUserInfo', '')
+            commit('SET_USERINFO', '')
             return Promise.resolve(res)
         } catch (error) {
             return Promise.reject(error)
@@ -30,7 +30,9 @@ export default {
     async getUserInfo({ commit }) {
         try {
             const userInfo = await adminApi.getUserInfo()
-            commit('saveUserInfo', userInfo)
+            commit('SET_USERINFO', userInfo)
+            commit('SET_MENUS',userInfo.menus)
+            commit('SET_RULENAMES',userInfo.ruleNames)
             return Promise.resolve(userInfo)
         } catch (error) {
             return Promise.reject(error)

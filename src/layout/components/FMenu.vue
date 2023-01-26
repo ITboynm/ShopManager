@@ -13,10 +13,14 @@ import TreeMenu from '../../components/TreeMenu.vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router'
 const route = useRoute()
+// 默认选中
 const activePath = ref(route.path)
 const store = useStore()
+// 是否展开
 const iscollapse = computed(() => store.state.asideWidth == '250px' ? false : true);
-const asideMenus = [{
+/**
+ * 测试菜单数据
+[{
     "name": "后台面板",
     "icon": 'help',
     "child": [
@@ -37,6 +41,8 @@ const asideMenus = [{
         }
     ]
 }]
+*/
+const asideMenus = computed(() => store.state.menus)
 </script>
 
 <style scoped lang='scss'>
@@ -49,5 +55,9 @@ const asideMenus = [{
     left: 0;
     overflow-y: auto;
     overflow-x: hidden;
+}
+// 隐藏滚动条
+.f-menu::-webkit-scrollbar{
+    width: 0px;
 }
 </style>

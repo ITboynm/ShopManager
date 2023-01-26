@@ -4,7 +4,7 @@ import 'virtual:windi.css'
 import '@/assets/style/reset.css'
 import 'element-plus/dist/index.css'
 import "nprogress/nprogress.css"
-import router from './router'
+import {router} from './router'
 import store from './store'
 import App from './App.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

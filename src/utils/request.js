@@ -3,7 +3,7 @@ axios二次封装
 */
 import axios from "axios"
 import config from "../config"
-import router from "../router"
+import { router } from "../router"
 import operateToken from '@/utils/auth'
 import { notification } from '@/utils/utils'
 import { useStore } from 'vuex'
@@ -32,7 +32,7 @@ service.interceptors.response.use((res) => {
     return data
 }, (error) => {
     let msg = error.response.data?.msg || ' 请求失败'
-    if(msg=='非法token，请重新登录'){
+    if (msg == '非法token，请重新登录') {
         store.dispatch('logout').finally(() => location.reload())
     }
     notification(msg, 'error')

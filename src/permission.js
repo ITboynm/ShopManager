@@ -1,4 +1,4 @@
-import router from '@/router'
+import { router, addRoutes } from '@/router'
 import operateToken from '@/utils/auth'
 import { notification, showFullLoading, hideFullLoading } from '@/utils/utils'
 import store from './store'
@@ -20,12 +20,16 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // 如果用户登录了，自动获取用户信息，并存储在vuex中
+    let hasNewRoutes = false
     if (token) {
-        await store.dispatch('getUserInfo')
+        const userInfo = await store.dispatch('getUserInfo')
+        // 动态添加路由
+        hasNewRoutes = addRoutes(userInfo.menus)
     }
     // 设置页面标题
     document.title = to.meta.title ? to.meta.title : ''
-    next()
+    // 判断是否有新路由
+    hasNewRoutes ? next(to.fullPath) : next()
 })
 
 // 全局后置守卫
