@@ -9,6 +9,9 @@
 </template>
 
 <style  lang="scss">
+body{
+  @apply bg-gray-100;
+}
 #nprogress {
   .bar {
     background-color: #f4f4f4 !important;

@@ -1,13 +1,14 @@
 <template>
     <div id="f-tag-list" :style="{ left: $store.state.asideWidth }">
-        <el-tabs v-model="activeTab" type="card" class="demo-tabs" @tab-remove="removeTab" style="min-width:100px;">
+        <el-tabs v-model="activeTab" type="card" class="demo-tabs" @tab-remove="removeTab" @tab-change="changeTab"
+            style="min-width:100px;">
             <el-tab-pane :closable="item.path != '/'" v-for="item in tabList" :key="item.path" :label="item.title"
                 :name="item.path">
                 <!-- {{ item.content }} -->
             </el-tab-pane>
         </el-tabs>
-        <span class="tag-btn">
-            <el-dropdown>
+        <span class="tag-btn" style="cursor: pointer;">
+            <el-dropdown @command="handleClose">
                 <span class="el-dropdown-link">
                     <el-icon>
                         <arrow-down />
@@ -15,54 +16,19 @@
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Action 1</el-dropdown-item>
-                        <el-dropdown-item>Action 2</el-dropdown-item>
-                        <el-dropdown-item>Action 3</el-dropdown-item>
-                        <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                        <el-dropdown-item divided>Action 5</el-dropdown-item>
+                        <el-dropdown-item command="clearOther">关闭其他</el-dropdown-item>
+                        <el-dropdown-item command="clearAll">全部关闭</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
         </span>
     </div>
+    <div style="height:44px;"></div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
-const route = useRoute()
-// 选中的tab
-const activeTab = ref(route.path)
-const tabList = ref([
-    {
-        title: '后台首页',
-        path: '/',
-    },
-    {
-        title: '商品管理',
-        path: '/goods/list',
-    }
-])
-
-// 删除tab栏事件
-const removeTab = (targetName) => {
-
-}
-/**
- * 自动添加tab栏事件
- * params {Object} - title 路由名字 path 路由路径
- * 
-*/
-const addTab = () => {
-
-}
-// 监听路由变化
-onBeforeRouteUpdate((to, from) => {
-    addTab({
-        title: to.meta.title,
-        path: to.path
-    })
-})
+import { useTabList } from '@/composables/useTabList'
+const { activeTab, tabList, changeTab, removeTab, handleClose } = useTabList()
 </script>
 
 <style scoped lang='scss'>

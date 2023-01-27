@@ -8,21 +8,18 @@
             <el-aside class="aside" :width="$store.state.asideWidth">
                 <f-menu></f-menu>
             </el-aside>
-            <suspense>
-                <!-- #default 异步组件加载完成后页面呈现的内容 -->
-                <template #default>
-                    <el-main class="main">
-                        <!-- 标签导航 -->
-                        <f-tag-list></f-tag-list>
-                        <!-- 主要内容 -->
-                        <router-view></router-view>
-                    </el-main>
-                </template>
-                <!-- #fallback 异步组件加载完成前页面呈现的内容 -->
-                <template #fallback>
-                    <h1>loading...</h1>
-                </template>
-            </suspense>
+            <el-main class="main">
+                <!-- 标签导航 -->
+                <f-tag-list></f-tag-list>
+                <!-- 主要内容 -->
+                <router-view v-slot="{ Component }">
+                    <transition name="fade" mode="out-in">
+                        <keep-alive :max="10">
+                            <component :is="Component"></component>
+                        </keep-alive>
+                    </transition>
+                </router-view>
+            </el-main>
         </el-container>
     </el-container>
 </template>
@@ -37,5 +34,33 @@ import FTagList from './components/FTagList.vue';
 .main,
 .aside {
     transition: all .5s;
+}
+
+.fade-enter-from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+}
+
+.fade-enter-to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.fade-leave-from {
+    opacity: 1;
+}
+
+.fade-leave-to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.3s;
+}
+
+.fade-enter-active {
+    transition-delay: 0.3s;
 }
 </style>
