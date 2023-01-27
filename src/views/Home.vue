@@ -58,7 +58,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import CountTo from '@/components/CountTo.vue'
+// import CountTo from '@/components/CountTo.vue'
 import statisticsApi from '@/api/statistics'
 
 // 统计数据
