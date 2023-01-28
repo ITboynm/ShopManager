@@ -66,6 +66,7 @@
           tip="店铺及商品提示"
           :btns="goods"
           class="mb-4"
+          v-permission="['getStatistics2,GET']"
         />
         <home-card
           title="交易提示"
