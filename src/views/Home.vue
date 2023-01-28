@@ -58,7 +58,7 @@
     <home-navs />
     <el-row :gutter="20">
       <el-col :span="12" :offset="0">
-        <home-chart />
+        <home-chart v-permission="['getStatistics3,GET']"/>
       </el-col>
       <el-col :span="12" :offset="0">
         <home-card

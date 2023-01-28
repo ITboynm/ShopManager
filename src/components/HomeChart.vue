@@ -76,6 +76,7 @@ const setOptinons = async (type) => {
 // 初始化echars
 onMounted(async () => {
   let chartDom = document.getElementById("chart");
+  if (!chartDom) return;
   myChart = useEchars({ ele: chartDom });
   await setOptinons(current.value);
   myChart.setOption(Option);
@@ -84,7 +85,6 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (myChart) delEchars(myChart);
 });
-
 </script>
 
 <style scoped lang="scss">
