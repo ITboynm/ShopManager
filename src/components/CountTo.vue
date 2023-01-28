@@ -1,9 +1,9 @@
 <template>
-    {{ d.num }}
+    {{ d.num.toFixed(0) }}
 </template>
 
 <script setup>
-import { reactive } from vue
+import { reactive,watch } from 'vue'
 import gsap from 'gsap'
 const props = defineProps({
     value: {
@@ -29,6 +29,4 @@ watch(() => props.value, () => {
 })
 </script>
 
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang="scss"></style>

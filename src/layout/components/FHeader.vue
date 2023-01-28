@@ -89,7 +89,7 @@ const handleCommand = (c) => {
 
 <style scoped lang='scss'>
 .f-header {
-    @apply flex items-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0;
+    @apply flex items-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0 z-99;
     height: 60px;
 
     .dropdown {

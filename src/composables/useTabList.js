@@ -50,7 +50,7 @@ export function useTabList() {
     }
     /**
      * 自动添加tab栏事件
-     * params {Object} - title 路由名字 path 路由路径
+     * @param {Object} - title 路由名字 path 路由路径
      * 
     */
     const addTab = (tab) => {
