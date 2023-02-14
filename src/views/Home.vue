@@ -58,21 +58,22 @@
     <home-navs />
     <el-row :gutter="20">
       <el-col :span="12" :offset="0">
-        <home-chart v-permission="['getStatistics3,GET']"/>
+        <home-chart v-permission="['getStatistics3,GET']" />
       </el-col>
       <el-col :span="12" :offset="0">
-        <home-card
-          title="店铺及商品提示"
-          tip="店铺及商品提示"
-          :btns="goods"
-          class="mb-4"
-          v-permission="['getStatistics2,GET']"
-        />
-        <home-card
-          title="交易提示"
-          tip="需要立即处理的交易订单"
-          :btns="order"
-        />
+        <div class="flex flex-col justify-between h-[100%]">
+          <home-card
+            title="店铺及商品提示"
+            tip="店铺及商品提示"
+            :btns="goods"
+            v-permission="['getStatistics2,GET']"
+          />
+          <home-card
+            title="交易提示"
+            tip="需要立即处理的交易订单"
+            :btns="order"
+          />
+        </div>
       </el-col>
     </el-row>
   </div>

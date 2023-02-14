@@ -1,7 +1,34 @@
 <template>
-  <div id="">图库列表</div>
+  <el-container class="bg-white rounded" :style="{ height: `${h}px` }">
+    <el-header class="image-header">
+      <el-button type="primary" size="small" @click="handleOpenCreate"
+        >新增图库分类</el-button
+      >
+    </el-header>
+    <el-container>
+      <image-aside ref="imageAsideRef" />
+      <image-main />
+    </el-container>
+  </el-container>
 </template>
 
-<script setup></script>
+<script setup>
+import ImageAside from "@/components/ImageAside.vue";
+import ImageMain from "@/components/ImageMain.vue";
+import { ref } from "vue";
+const imageAsideRef = ref(null);
+const handleOpenCreate = () => {
+  imageAsideRef.value.handleCreate();
+};
+// 获取浏览器可视区范围
+const windowHeight = window.innerHeight || document.body.clientHeight;
+// 获取展示区高度
+const h = windowHeight - 60 - 44 - 22;
+</script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.image-header {
+  border-bottom: 1px solid #eee;
+  @apply flex items-center;
+}
+</style>
