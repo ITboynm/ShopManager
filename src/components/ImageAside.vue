@@ -1,36 +1,18 @@
 <template>
   <el-aside width="220px" class="image-aside" v-loading="loading">
     <div class="top">
-      <aside-list
-        v-for="(item, index) in imageList"
-        :key="index"
-        :active="activeId == item.id"
-        @edit="hanldeEdit"
-        @delete="handleDelete"
-        @click="handleClick(item.id)"
-      >
+      <aside-list v-for="(item, index) in imageList" :key="index" :active="activeId == item.id" @edit="handleEdit(item)"
+        @delete="handleDelete(item.id)" @click="handleChangeActiveId(item.id)">
         {{ item.name }}
       </aside-list>
     </div>
     <div class="bottom">
-      <el-pagination
-        @current-change="changeCurrent"
-        background
-        layout="prev, next"
-        :total="pager.total"
-        :page-size="pager.limit"
-        :current-page="pager.page"
-      />
+      <el-pagination @current-change="changeCurrent" background layout="prev, next" :total="pager.total"
+        :page-size="pager.limit" :current-page="pager.page" />
     </div>
   </el-aside>
-  <FormDrawer title="新增" ref="formDrawerRef" @submit="hanldeCreateSubmit">
-    <el-form
-      :model="createForm"
-      ref="DrawerRef"
-      :rules="rules"
-      label-width="80px"
-      :inline="false"
-    >
+  <FormDrawer :title="isEdit ? '编辑' : '新增'" ref="formDrawerRef" @submit="handleSubmit">
+    <el-form :model="createForm" ref="DrawerRef" :rules="rules" label-width="80px" :inline="false">
       <el-form-item label="分类名称" prop="name">
         <el-input v-model="createForm.name"></el-input>
       </el-form-item>
@@ -45,15 +27,16 @@
 import AsideList from "@/components/AsideList.vue";
 import imageApi from "@/api/image";
 import FormDrawer from "@/components/FormDrawer.vue";
-import { onMounted, reactive, ref, toRaw } from "vue";
-import { notification } from "@/utils/utils";
+import { onMounted, onBeforeUnmount, reactive, ref, toRaw, getCurrentInstance } from "vue";
+import { notification, showModal } from "@/utils/utils";
+const { appContext: { config: { globalProperties: ctx } } } = getCurrentInstance()
 const formDrawerRef = ref(null);
 const DrawerRef = ref(null);
 const createForm = reactive({
   name: "",
   order: 50,
 });
-
+const isEdit = ref(false)
 const rules = {
   name: [
     {
@@ -90,35 +73,62 @@ const getData = async (param) => {
   }
 };
 // 编辑
-const hanldeEdit = (index) => {
-  console.log("edit");
+const handleEdit = (row) => {
+  Object.assign(createForm, { name: row.name, order: row.order, editId: row.id })
+  isEdit.value = true
+  formDrawerRef.value.open();
+  console.log(createForm);
 };
 // 删除
-const handleDelete = (index) => {
-  console.log("delete");
+const handleDelete = async (id) => {
+  loading.value = true
+  try {
+    const data = await imageApi.deleteImageClass(id)
+    if (data) {
+      notification('删除成功')
+      getData();
+    } else {
+      notification('删除失败', 'error')
+    }
+    loading.value = false
+  } catch (error) {
+    notification('删除失败', 'error')
+    loading.value = false
+  }
 };
-// 点击
-const handleClick = (id) => {
+// 点击切换分类
+const handleChangeActiveId = (id) => {
   activeId.value = id;
+  ctx.$EventBus.emit('changeImageActive', activeId.value)
 };
 // 添加
 const handleCreate = () => {
+  isEdit.value = false
   formDrawerRef.value.open();
 };
 // 提交表单
-const hanldeCreateSubmit = () => {
+const handleSubmit = () => {
   DrawerRef.value.validate(async (valid, fields) => {
     if (!valid) return false;
+    formDrawerRef.value.showLoading()
+    let text = '操作';
     try {
-      const res = await imageApi.setImageClassList(createForm);
-      if (res.id) {
-        notification("新增图库分类成功");
-        formDrawerRef.value.close();
-        DrawerRef.value.resetFields();
-        getData();
+      let res;
+      if (!isEdit.value) {
+        res = await imageApi.setImageClass(createForm);
+        if (res) text = "新增"
+      } else {
+        res = await imageApi.updateImageClass(createForm.editId, { name: createForm.name, order: createForm.order });
+        if (res) text = "编辑"
       }
+      formDrawerRef.value.hideLoading()
+      formDrawerRef.value.close();
+      DrawerRef.value.resetFields();
+      getData();
+      notification(`${text}图库分类成功`);
     } catch (error) {
-      notification("新增图库分类失败", "error");
+      notification(`${text}图库分类失败`, "error");
+      formDrawerRef.value.hideLoading()
       formDrawerRef.value.close();
       DrawerRef.value.resetFields();
     }
@@ -128,18 +138,25 @@ const changeCurrent = (cur) => {
   pager.page = cur;
   getData(toRaw(pager));
 };
+
 defineExpose({
   handleCreate,
 });
-onMounted(() => {
-  getData();
+onMounted(async () => {
+  await getData();
+  ctx.$EventBus.emit('changeImageActive', activeId.value)
 });
+onBeforeUnmount(() => {
+  // 移除指定事件
+  ctx.$EventBus.off('changeImageActive')
+})
 </script>
 
 <style scoped lang="scss">
 .image-aside {
   border-right: 1px solid #eee;
   position: relative;
+
   .top {
     position: absolute;
     top: 0;
@@ -148,6 +165,7 @@ onMounted(() => {
     bottom: 50px;
     overflow-y: auto;
   }
+
   .bottom {
     position: absolute;
     height: 50px;

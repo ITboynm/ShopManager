@@ -33,7 +33,7 @@ const { activeTab, tabList, changeTab, removeTab, handleClose } = useTabList()
 
 <style scoped lang='scss'>
 #f-tag-list {
-    @apply fixed bg-gray-100 flex items-center z-99 px-2;
+    @apply fixed bg-gray-100 flex items-center z-99 px-[16px];
     top: 60px;
     right: 0;
     height: 44px;
