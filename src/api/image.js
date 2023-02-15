@@ -1,49 +1,34 @@
 import request from "@/utils/request";
-// 图库接口
+// 图片接口
 export default {
-  // 图库列表接口
-  getImageClassList({ page, limit } = { page: 1, limit: 10 }, params) {
+  // 修改图片名称
+  updateImageName(id, params) {
     return request({
-      url: `/image_class/${page}?limit=${limit}`,
-      method: "get",
-      data: params,
-      // mock: false
-    });
-  },
-  // 增加图库分类
-  setImageClass(params) {
-    return request({
-      url: `/image_class`,
+      url: `/image/${id}`,
       method: "post",
       data: params,
       // mock: false
     });
   },
-  // 修改图库分类
-  updateImageClass(id, params) {
+  // 删除图片
+  //   参数
+  //   { "ids": [ 483 ] //图片ID组成的一维数组}
+  deleteImage(params) {
     return request({
-      url: `/image_class/${id}`,
+      url: `/image/delete_all`,
       method: "post",
       data: params,
       // mock: false
     });
   },
-  // 删除图库分类
-  deleteImageClass(id, params) {
+  //   图片上传
+  uploadImage(params) {
     return request({
-      url: `/image_class/${id}/delete`,
+      url: `/image/upload`,
       method: "post",
       data: params,
       // mock: false
     });
   },
-  // 指定图库列表接口
-  getImageClassListById(id, { page, limit } = { page: 1, limit: 10 }, params) {
-    return request({
-      url: `/image_class/${id}/image/${page}?limit=${limit}`,
-      method: "get",
-      data: params,
-      // mock: false
-    });
-  },
+  uploadImageUrl: "/admin/image/upload",
 };

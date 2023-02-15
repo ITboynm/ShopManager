@@ -1,18 +1,40 @@
 <template>
   <el-aside width="220px" class="image-aside" v-loading="loading">
     <div class="top">
-      <aside-list v-for="(item, index) in imageList" :key="index" :active="activeId == item.id" @edit="handleEdit(item)"
-        @delete="handleDelete(item.id)" @click="handleChangeActiveId(item.id)">
+      <aside-list
+        v-for="(item, index) in imageList"
+        :key="index"
+        :active="activeId == item.id"
+        @edit="handleEdit(item)"
+        @delete="handleDelete(item.id)"
+        @click="handleChangeActiveId(item.id)"
+      >
         {{ item.name }}
       </aside-list>
     </div>
     <div class="bottom">
-      <el-pagination @current-change="changeCurrent" background layout="prev, next" :total="pager.total"
-        :page-size="pager.limit" :current-page="pager.page" />
+      <el-pagination
+        @current-change="changeCurrent"
+        background
+        layout="prev, next"
+        :total="pager.total"
+        :page-size="pager.limit"
+        :current-page="pager.page"
+      />
     </div>
   </el-aside>
-  <FormDrawer :title="isEdit ? '编辑' : '新增'" ref="formDrawerRef" @submit="handleSubmit">
-    <el-form :model="createForm" ref="DrawerRef" :rules="rules" label-width="80px" :inline="false">
+  <FormDrawer
+    :title="isEdit ? '编辑' : '新增'"
+    ref="formDrawerRef"
+    @submit="handleSubmit"
+  >
+    <el-form
+      :model="createForm"
+      ref="DrawerRef"
+      :rules="rules"
+      label-width="80px"
+      :inline="false"
+    >
       <el-form-item label="分类名称" prop="name">
         <el-input v-model="createForm.name"></el-input>
       </el-form-item>
@@ -25,18 +47,29 @@
 
 <script setup>
 import AsideList from "@/components/AsideList.vue";
-import imageApi from "@/api/image";
+import imageClassApi from "@/api/image_class";
 import FormDrawer from "@/components/FormDrawer.vue";
-import { onMounted, onBeforeUnmount, reactive, ref, toRaw, getCurrentInstance } from "vue";
+import {
+  onMounted,
+  onBeforeUnmount,
+  reactive,
+  ref,
+  toRaw,
+  getCurrentInstance,
+} from "vue";
 import { notification, showModal } from "@/utils/utils";
-const { appContext: { config: { globalProperties: ctx } } } = getCurrentInstance()
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const formDrawerRef = ref(null);
 const DrawerRef = ref(null);
 const createForm = reactive({
   name: "",
   order: 50,
 });
-const isEdit = ref(false)
+const isEdit = ref(false);
 const rules = {
   name: [
     {
@@ -59,10 +92,10 @@ const pager = reactive({
   total: 0,
 });
 // 获取数据
-const getData = async (param) => {
+const getData = async (param = { page: pager.page, limit: pager.limit }) => {
   loading.value = true;
   try {
-    const res = await imageApi.getImageClassList(param);
+    const res = await imageClassApi.getImageClassList(param);
     imageList.value = res.list;
     pager.total = res.totalCount;
     imageList.value[0] && (activeId.value = imageList.value[0].id);
@@ -74,69 +107,79 @@ const getData = async (param) => {
 };
 // 编辑
 const handleEdit = (row) => {
-  Object.assign(createForm, { name: row.name, order: row.order, editId: row.id })
-  isEdit.value = true
+  Object.assign(createForm, {
+    name: row.name,
+    order: row.order,
+    editId: row.id,
+  });
+  isEdit.value = true;
   formDrawerRef.value.open();
-  console.log(createForm);
 };
 // 删除
 const handleDelete = async (id) => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await imageApi.deleteImageClass(id)
+    const data = await imageClassApi.deleteImageClass(id);
     if (data) {
-      notification('删除成功')
-      getData();
+      notification("删除成功");
+      await getData();
+      ctx.$EventBus.emit("changeImageActive", activeId.value);
     } else {
-      notification('删除失败', 'error')
+      notification("删除失败", "error");
     }
-    loading.value = false
+    loading.value = false;
   } catch (error) {
-    notification('删除失败', 'error')
-    loading.value = false
+    notification("删除失败", "error");
+    loading.value = false;
   }
 };
 // 点击切换分类
 const handleChangeActiveId = (id) => {
   activeId.value = id;
-  ctx.$EventBus.emit('changeImageActive', activeId.value)
+  ctx.$EventBus.emit("changeImageActive", activeId.value);
 };
 // 添加
 const handleCreate = () => {
-  isEdit.value = false
+  isEdit.value = false;
   formDrawerRef.value.open();
 };
 // 提交表单
 const handleSubmit = () => {
   DrawerRef.value.validate(async (valid, fields) => {
     if (!valid) return false;
-    formDrawerRef.value.showLoading()
-    let text = '操作';
+    formDrawerRef.value.showLoading();
+    let text = "操作";
     try {
       let res;
       if (!isEdit.value) {
-        res = await imageApi.setImageClass(createForm);
-        if (res) text = "新增"
+        res = await imageClassApi.setImageClass(createForm);
+        if (res) text = "新增";
       } else {
-        res = await imageApi.updateImageClass(createForm.editId, { name: createForm.name, order: createForm.order });
-        if (res) text = "编辑"
+        res = await imageClassApi.updateImageClass(createForm.editId, {
+          name: createForm.name,
+          order: createForm.order,
+        });
+        if (res) text = "编辑";
       }
-      formDrawerRef.value.hideLoading()
+      formDrawerRef.value.hideLoading();
       formDrawerRef.value.close();
       DrawerRef.value.resetFields();
-      getData();
+      pager.page = 1;
+      await getData();
       notification(`${text}图库分类成功`);
+      ctx.$EventBus.emit("changeImageActive", activeId.value);
     } catch (error) {
       notification(`${text}图库分类失败`, "error");
-      formDrawerRef.value.hideLoading()
+      formDrawerRef.value.hideLoading();
       formDrawerRef.value.close();
       DrawerRef.value.resetFields();
     }
   });
 };
-const changeCurrent = (cur) => {
+const changeCurrent = async (cur) => {
   pager.page = cur;
-  getData(toRaw(pager));
+  await getData(toRaw(pager));
+  ctx.$EventBus.emit("changeImageActive", activeId.value);
 };
 
 defineExpose({
@@ -144,12 +187,12 @@ defineExpose({
 });
 onMounted(async () => {
   await getData();
-  ctx.$EventBus.emit('changeImageActive', activeId.value)
+  ctx.$EventBus.emit("changeImageActive", activeId.value);
 });
 onBeforeUnmount(() => {
   // 移除指定事件
-  ctx.$EventBus.off('changeImageActive')
-})
+  ctx.$EventBus.off("changeImageActive");
+});
 </script>
 
 <style scoped lang="scss">

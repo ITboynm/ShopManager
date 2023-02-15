@@ -2,38 +2,96 @@
   <el-main class="image-main" v-loading="loading">
     <div class="top p-3">
       <el-row :gutter="10">
-        <el-col :span="6" :offset="0" v-for="(item, index) in imageList" :key="index">
-          <el-card shadow="hover" class="relative mb-3 cursor-pointer" :body-style="{
-            'padding': 0
-          }">
-            <el-image :src="item.url" :fit="cover" :preview-src-list="[item.url]" :initial-index="0"
-              class="w-full h-[150px]" />
+        <el-col
+          :span="6"
+          :offset="0"
+          v-for="(item, index) in imageList"
+          :key="index"
+        >
+          <el-card
+            shadow="hover"
+            class="relative mb-3 cursor-pointer"
+            :body-style="{
+              padding: 0,
+            }"
+          >
+            <el-image
+              :src="item.url"
+              :fit="cover"
+              :preview-src-list="[item.url]"
+              :initial-index="0"
+              class="w-full h-[150px]"
+            />
             <div class="image-title">{{ item.name }}</div>
             <div class="flex items-center justify-center py-2">
-              <el-button type="primary" size="small" text>重命名</el-button>
-              <el-button type="primary" size="small" text>删除</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                text
+                @click="handleimageRename(item.id, item.name)"
+                >重命名</el-button
+              >
+              <el-popconfirm
+                title="是否删除该图片?"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                width="158px"
+                @confirm="handleImageDelete(item.id)"
+              >
+                <template #reference>
+                  <el-button type="primary" size="small" text>删除</el-button>
+                </template>
+              </el-popconfirm>
             </div>
           </el-card>
         </el-col>
       </el-row>
     </div>
     <div class="bottom">
-      <el-pagination @current-change="changeCurrent" background layout="prev, pager, next" :total="pager.total"
-        :page-size="pager.limit" :current-page="pager.page" />
+      <el-pagination
+        @current-change="changeCurrent"
+        background
+        layout="prev, pager, next"
+        :total="pager.total"
+        :page-size="pager.limit"
+        :current-page="pager.page"
+      />
     </div>
   </el-main>
+  <el-drawer v-model="drawer" title="上传图片">
+    <upload-file
+      @success="handleuploadSuccess"
+      :data="{ image_class_id }"
+    ></upload-file>
+  </el-drawer>
 </template>
 
 <script setup>
+import imageClassApi from "@/api/image_class";
 import imageApi from "@/api/image";
-import { onMounted, onBeforeUnmount, reactive, ref, getCurrentInstance } from 'vue'
-const { appContext: { config: { globalProperties: ctx } } } = getCurrentInstance()
+import UploadFile from "@/components/UploadFile.vue";
+import {
+  onMounted,
+  onBeforeUnmount,
+  reactive,
+  ref,
+  getCurrentInstance,
+} from "vue";
+import { showPromptModal, notification } from "@/utils/utils";
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
+// 是否展示上传图片组件
+const drawer = ref(false);
+const openUploadFile = () => (drawer.value = true);
 // 加载动画
 const loading = ref(false);
 // 列表数据
 const imageList = ref([]);
 // 图库分类ID
-const image_class_id = ref(0)
+const image_class_id = ref(0);
 // 分页参数
 const pager = reactive({
   page: 1,
@@ -44,7 +102,7 @@ const pager = reactive({
 const getData = async (id, param) => {
   loading.value = true;
   try {
-    const res = await imageApi.getImageClassListById(id, param);
+    const res = await imageClassApi.getImageClassListById(id, param);
     imageList.value = res.list;
     pager.total = res.totalCount;
     loading.value = false;
@@ -55,19 +113,60 @@ const getData = async (id, param) => {
 };
 
 // 根据分类id请求数据
-const loadData = (id) => {
-  pager.page = 1
-  image_class_id.value = id
-  getData(image_class_id.value, pager)
-}
+const loadData = (cur, id = image_class_id.value) => {
+  image_class_id.value = id;
+  cur ? (pager.page = cur) : (pager.page = 1);
+  getData(image_class_id.value, pager);
+};
+const changeCurrent = (cur) => {
+  loadData(cur);
+};
+const handleimageRename = (id, name) => {
+  showPromptModal("重命名图片", name)
+    .then(async ({ value }) => {
+      loading.value = true;
+      const res = await imageApi.updateImageName(id, { name: value });
+      if (res) {
+        loadData(pager.page);
+        notification("修改图片名称成功", "success");
+      } else {
+        notification("修改图片名称失败", "error");
+      }
+      loading.value = false;
+    })
+    .catch(() => {
+      notification("用户取消操作", "info");
+    });
+};
 
-ctx.$EventBus.on('changeImageActive', id => {
-  loadData(id)
-})
+const handleImageDelete = async (id) => {
+  try {
+    loading.value = true;
+    const res = await imageApi.deleteImage({ ids: [id] });
+    if (res) {
+      loadData();
+      notification("删除图片成功", "success");
+    } else {
+      notification("删除图片失败", "error");
+    }
+    loading.value = false;
+  } catch (error) {
+    notification("删除图片失败", "error");
+  }
+};
+
+ctx.$EventBus.on("changeImageActive", async (id) => {
+  await loadData(1, id);
+});
+// 监听上传成功
+const handleuploadSuccess = () => loadData();
+defineExpose({
+  openUploadFile,
+});
 onBeforeUnmount(() => {
   // 移除指定事件
-  ctx.$EventBus.off('changeImageActive')
-})
+  ctx.$EventBus.off("changeImageActive");
+});
 </script>
 
 <style scoped lang="scss">

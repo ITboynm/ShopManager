@@ -4,10 +4,13 @@
       <el-button type="primary" size="small" @click="handleOpenCreate"
         >新增图库分类</el-button
       >
+      <el-button type="warning" size="small" @click="handleOpenUploadFile"
+        >上传图片</el-button
+      >
     </el-header>
     <el-container>
       <image-aside ref="imageAsideRef" />
-      <image-main />
+      <image-main ref="imageMainRef" />
     </el-container>
   </el-container>
 </template>
@@ -17,9 +20,11 @@ import ImageAside from "@/components/ImageAside.vue";
 import ImageMain from "@/components/ImageMain.vue";
 import { ref } from "vue";
 const imageAsideRef = ref(null);
-const handleOpenCreate = () => {
-  imageAsideRef.value.handleCreate();
-};
+const imageMainRef = ref(null);
+// 新增分类
+const handleOpenCreate = () => imageAsideRef.value.handleCreate();
+// 上传图片
+const handleOpenUploadFile = () => imageMainRef.value.openUploadFile();
 // 获取浏览器可视区范围
 const windowHeight = window.innerHeight || document.body.clientHeight;
 // 获取展示区高度
