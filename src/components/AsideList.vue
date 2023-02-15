@@ -30,7 +30,7 @@
           size="small"
         >
           <el-icon :size="12">
-            <Close />
+            <Delete />
           </el-icon>
         </el-button>
       </template>

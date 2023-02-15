@@ -152,6 +152,7 @@ const handleImageDelete = async (id) => {
     loading.value = false;
   } catch (error) {
     notification("删除图片失败", "error");
+    loading.value = false;
   }
 };
 

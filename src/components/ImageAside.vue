@@ -55,6 +55,7 @@ import {
   reactive,
   ref,
   toRaw,
+  nextTick,
   getCurrentInstance,
 } from "vue";
 import { notification, showModal } from "@/utils/utils";
@@ -107,13 +108,16 @@ const getData = async (param = { page: pager.page, limit: pager.limit }) => {
 };
 // 编辑
 const handleEdit = (row) => {
-  Object.assign(createForm, {
-    name: row.name,
-    order: row.order,
-    editId: row.id,
-  });
   isEdit.value = true;
+  DrawerRef.value.clearValidate();
   formDrawerRef.value.open();
+  nextTick(() => {
+    Object.assign(createForm, {
+      name: row.name,
+      order: row.order,
+      editId: row.id,
+    });
+  });
 };
 // 删除
 const handleDelete = async (id) => {
@@ -141,7 +145,14 @@ const handleChangeActiveId = (id) => {
 // 添加
 const handleCreate = () => {
   isEdit.value = false;
+  DrawerRef.value.clearValidate();
   formDrawerRef.value.open();
+};
+// 初始化状态
+const resetLoading = () => {
+  formDrawerRef.value.hideLoading();
+  formDrawerRef.value.close();
+  DrawerRef.value.resetFields();
 };
 // 提交表单
 const handleSubmit = () => {
@@ -161,18 +172,14 @@ const handleSubmit = () => {
         });
         if (res) text = "编辑";
       }
-      formDrawerRef.value.hideLoading();
-      formDrawerRef.value.close();
-      DrawerRef.value.resetFields();
+      resetLoading();
       pager.page = 1;
       await getData();
       notification(`${text}图库分类成功`);
       ctx.$EventBus.emit("changeImageActive", activeId.value);
     } catch (error) {
       notification(`${text}图库分类失败`, "error");
-      formDrawerRef.value.hideLoading();
-      formDrawerRef.value.close();
-      DrawerRef.value.resetFields();
+      resetLoading();
     }
   });
 };
