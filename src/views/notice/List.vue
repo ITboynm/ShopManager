@@ -107,6 +107,9 @@ const tableData = ref([]);
 const formDrawerRef = ref(null);
 const DrawerRef = ref(null);
 const isEdit = ref(false);
+const resetForm = () => {
+  if (DrawerRef.value) DrawerRef.value.clearValidate();
+};
 const createForm = reactive({
   editId: null,
   title: "",
@@ -185,12 +188,12 @@ const handleDelete = async (id) => {
 };
 // 新增
 const handleCreate = async () => {
-  DrawerRef.value.clearValidate();
+  resetForm()
   formDrawerRef.value.open();
 };
 const handleEdit = (row) => {
   isEdit.value = true;
-  DrawerRef.value.clearValidate();
+  resetForm()
   formDrawerRef.value.open();
   nextTick(() => {
     Object.assign(createForm, {

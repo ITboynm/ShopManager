@@ -59,6 +59,7 @@ import {
   getCurrentInstance,
 } from "vue";
 import { notification, showModal } from "@/utils/utils";
+
 const {
   appContext: {
     config: { globalProperties: ctx },
@@ -71,6 +72,9 @@ const createForm = reactive({
   order: 50,
 });
 const isEdit = ref(false);
+const resetForm = () => {
+  if (DrawerRef.value) DrawerRef.value.clearValidate();
+};
 const rules = {
   name: [
     {
@@ -109,7 +113,7 @@ const getData = async (param = { page: pager.page, limit: pager.limit }) => {
 // 编辑
 const handleEdit = (row) => {
   isEdit.value = true;
-  DrawerRef.value.clearValidate();
+  resetForm()
   formDrawerRef.value.open();
   nextTick(() => {
     Object.assign(createForm, {
@@ -145,7 +149,7 @@ const handleChangeActiveId = (id) => {
 // 添加
 const handleCreate = () => {
   isEdit.value = false;
-  DrawerRef.value.clearValidate();
+  resetForm()
   formDrawerRef.value.open();
 };
 // 初始化状态
