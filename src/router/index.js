@@ -109,6 +109,14 @@ const asyncRoutes = [
         meta: {
             title: '优惠券管理'
         }
+    },
+    {
+        path: '/manager/list',
+        name: '/manager/list',
+        component: () => import(/* webpackChunkName: "ManagerList" */ '@/views/manager/List.vue'),
+        meta: {
+            title: '管理员管理'
+        }
     }
 ]
 export const router = createRouter({

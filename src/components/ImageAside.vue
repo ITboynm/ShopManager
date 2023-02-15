@@ -169,6 +169,7 @@ const handleSubmit = () => {
       if (!isEdit.value) {
         res = await imageClassApi.setImageClass(createForm);
         if (res) text = "新增";
+        pager.page = 1;
       } else {
         res = await imageClassApi.updateImageClass(createForm.editId, {
           name: createForm.name,
@@ -177,7 +178,6 @@ const handleSubmit = () => {
         if (res) text = "编辑";
       }
       resetLoading();
-      pager.page = 1;
       await getData();
       notification(`${text}图库分类成功`);
       ctx.$EventBus.emit("changeImageActive", activeId.value);

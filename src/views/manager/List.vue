@@ -1,5 +1,36 @@
 <template>
   <div id="">
+    <!-- 搜索 -->
+    <el-form
+      :model="queryform"
+      ref="queryformRef"
+      :rules="rules"
+      label-width="80px"
+      class="queryform"
+      inline
+      size="normal"
+    >
+      <el-form-item label="">
+        <el-input
+          v-model="queryform.keyword"
+          class="w-[200px]"
+          size="small"
+          placeholder="管理员昵称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          @click="handleQuery"
+          icon="Search"
+          size="small"
+          >搜索</el-button
+        >
+        <el-button icon="RefreshLeft" size="small" @click="handleQueryRest"
+          >重置</el-button
+        >
+      </el-form-item>
+    </el-form>
     <el-card
       shadow="never"
       class="border-0 relative"
@@ -24,14 +55,40 @@
         v-loading="loading"
         :max-height="h - (48 + 80)"
       >
+        <el-table-column label="管理员" width="200">
+          <template #default="{ row }">
+            <div class="flex items-center">
+              <el-avatar :size="40" :src="row.avatar">
+                <img
+                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                />
+              </el-avatar>
+              <div class="ml-3">
+                <h6>{{ row.username }}</h6>
+                <small>ID:{{ row.id }}</small>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           v-for="(item, index) in columns"
           :key="index"
           :prop="item.prop"
           :label="item.label"
           :width="item.with || 'auto'"
+          :align="item.align || ''"
           :formatter="item.formatter"
         />
+        <el-table-column label="状态" width="120">
+          <template #default="{ row }">
+            <el-switch
+              :model-value="row.status"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template #default="scope">
             <el-button
@@ -43,7 +100,7 @@
               >修改</el-button
             >
             <el-popconfirm
-              title="是否删除该公告?"
+              title="是否删除该管理员?"
               confirm-button-text="确认"
               cancel-button-text="取消"
               width="158px"
@@ -103,8 +160,13 @@
 import { onMounted, ref, reactive, nextTick } from "vue";
 import moment from "moment";
 import noticeApi from "@/api/notice";
+import adminApi from "@/api/admin";
 import { notification } from "@/utils/utils";
 import FormDrawer from "@/components/FormDrawer.vue";
+const queryformRef = ref(null);
+const queryform = reactive({
+  keyword: "",
+});
 // 分页参数
 const pager = reactive({
   page: 1,
@@ -140,26 +202,19 @@ const rules = {
     },
   ],
 };
-// 测试数据
-// const testData = [
-//   {
-//     id: 13,
-//     title: "nip",
-//     content: "nip\n",
-//     order: 0,
-//     create_time: "2022-06-06 14:40:11",
-//     update_time: "2022-06-06 14:40:11",
-//   },
-// ];
 
 // 表格列头
 const columns = [
   {
-    label: "公告标题",
-    prop: "title",
+    label: "所属管理员",
+    prop: "role",
+    align: "center",
+    formatter: (row) => {
+      return row.role?.name || "-";
+    },
   },
   {
-    label: "发布时间",
+    label: "创建时间",
     prop: "create_time",
     with: 380,
     formatter: (row) => {
@@ -167,10 +222,10 @@ const columns = [
     },
   },
 ];
-const getData = async (param = pager) => {
+const getData = async (param = pager, data) => {
   loading.value = true;
   try {
-    const res = await noticeApi.getNotices(param);
+    const res = await adminApi.getManagers(param, data);
     pager.total = res.totalCount;
     tableData.value = res.list;
     loading.value = false;
@@ -200,6 +255,7 @@ const handleCreate = async () => {
   resetForm();
   formDrawerRef.value.open();
 };
+// 编辑
 const handleEdit = (row) => {
   isEdit.value = true;
   resetForm();
@@ -211,6 +267,17 @@ const handleEdit = (row) => {
       editId: row.id,
     });
   });
+};
+// 查询
+const handleQuery = () => {
+  queryform.keyword
+    ? getData(pager, { keyword: queryform.keyword })
+    : getData();
+};
+// 重置
+const handleQueryRest = () => {
+  queryform.keyword = "";
+  getData();
 };
 // 初始化状态
 const resetLoading = () => {
@@ -254,15 +321,26 @@ const changeCurrent = async (cur) => {
 // 获取浏览器可视区范围
 const windowHeight = window.innerHeight || document.body.clientHeight;
 // 获取展示区高度
-const h = windowHeight - 60 - 44 - 22;
+const h = windowHeight - 60 - 44 - 22 - 78;
 onMounted(() => {
   getData();
 });
 </script>
 
 <style scoped lang="scss">
+.queryform {
+  margin-bottom: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e4e7ed;
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
 .pagination {
-  @apply flex items-center justify-center mt-5 absolute bottom-0 left-0 right-0 py-2 w-[100%];
+  @apply flex items-center justify-center mt-5 absolute bottom-0 left-0 right-0 py-2 w-[100%] z-50;
   height: 60px;
 }
 </style>
