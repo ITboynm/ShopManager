@@ -14,6 +14,7 @@
             :body-style="{
               padding: 0,
             }"
+            :class="{ checked: item.checked }"
           >
             <el-image
               :src="item.url"
@@ -24,6 +25,11 @@
             />
             <div class="image-title">{{ item.name }}</div>
             <div class="flex items-center justify-center py-2">
+              <el-checkbox
+                v-model="item.checked"
+                v-if="isChoose"
+                @change="handleChooseChange(item)"
+              ></el-checkbox>
               <el-button
                 type="primary"
                 size="small"
@@ -39,7 +45,9 @@
                 @confirm="handleImageDelete(item.id)"
               >
                 <template #reference>
-                  <el-button type="primary" size="small" text>删除</el-button>
+                  <el-button type="primary" size="small" text style="margin: 0"
+                    >删除</el-button
+                  >
                 </template>
               </el-popconfirm>
             </div>
@@ -76,6 +84,7 @@ import {
   reactive,
   ref,
   getCurrentInstance,
+  computed,
 } from "vue";
 import { showPromptModal, notification } from "@/utils/utils";
 const {
@@ -83,8 +92,17 @@ const {
     config: { globalProperties: ctx },
   },
 } = getCurrentInstance();
+defineProps({
+  isChoose: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emits = defineEmits(["choose"]);
 // 是否展示上传图片组件
 const drawer = ref(false);
+
 const openUploadFile = () => (drawer.value = true);
 // 加载动画
 const loading = ref(false);
@@ -103,7 +121,10 @@ const getData = async (id, param) => {
   loading.value = true;
   try {
     const res = await imageClassApi.getImageClassListById(id, param);
-    imageList.value = res.list;
+    imageList.value = res.list.map((item) => {
+      item.checked = false;
+      return item;
+    });
     pager.total = res.totalCount;
     loading.value = false;
   } catch (error) {
@@ -156,6 +177,24 @@ const handleImageDelete = async (id) => {
   }
 };
 
+// 选中的图片
+const checkedImage = computed(() =>
+  imageList.value.filter((item) => item.checked)
+);
+const handleChooseChange = (item) => {
+  if (item.checked && checkedImage.value.length > 1) {
+    item.checked = false;
+    return notification("至多选中一张图片", "info");
+  }
+  emits("choose", checkedImage.value[0]?.url);
+};
+
+const resetChecked = () => {
+  imageList.value.forEach((item) => {
+    item.checked = false;
+  });
+};
+
 ctx.$EventBus.on("changeImageActive", async (id) => {
   await loadData(1, id);
 });
@@ -163,6 +202,7 @@ ctx.$EventBus.on("changeImageActive", async (id) => {
 const handleuploadSuccess = () => loadData();
 defineExpose({
   openUploadFile,
+  resetChecked,
 });
 onBeforeUnmount(() => {
   // 移除指定事件
@@ -189,6 +229,9 @@ onBeforeUnmount(() => {
       left: -1px;
       right: -1px;
       @apply text-sm truncate text-gray-100 bg-opacity-50 bg-gray-800 px-2 py-1;
+    }
+    .checked {
+      border: 1px solid rgba(59, 130, 246, 1) !important;
     }
   }
 

@@ -71,6 +71,7 @@ const setOptinons = async (type) => {
   let res = await statisticsApi.getStatistics3(type);
   Option.xAxis.data = res.x;
   Option.series[0].data = res.y;
+  Option.title.text = type
   myChart.hideLoading();
 };
 // 初始化echars

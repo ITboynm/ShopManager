@@ -157,7 +157,10 @@
           <el-input v-model="createForm.password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="头像" prop="avatar">
-          <ChooseImage></ChooseImage>
+          <ChooseImage
+            @ChooseImage="setImage"
+            :Image="createForm.avatar"
+          ></ChooseImage>
         </el-form-item>
         <el-form-item label="所属管理员" prop="role_id">
           <el-select v-model="createForm.role_id" placeholder="请选择管理员">
@@ -225,7 +228,7 @@ const rules = reactive({
       message: "用户名不能为空",
       trigger: "blur",
     },
-    { min: 3, max: 5, message: "用户名的长度在3~5位", trigger: "blur" },
+    { min: 3, max: 10, message: "用户名的长度在3~10位", trigger: "blur" },
   ],
   password: [
     {
@@ -236,7 +239,9 @@ const rules = reactive({
     { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
   ],
 });
-
+const setImage = (avatar) => {
+  createForm.avatar = avatar;
+};
 // 表格列头
 const columns = [
   {

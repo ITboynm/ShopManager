@@ -1,29 +1,94 @@
 <template>
-  <div class="choose-image-btn" @click="open">
-    <el-icon :size="25" color="rgba(107, 114, 128, 0.5)"><Plus /></el-icon>
+  <div>
+    <div class="choose-image-btn" @click="open">
+      <el-icon v-if="!imageUrl" :size="25" color="rgba(107, 114, 128, 0.5)"
+        ><Plus
+      /></el-icon>
+      <el-image
+        v-else
+        :src="imageUrl"
+        alt=""
+        :fit="cover"
+        class="h-[100%] w-[100%]"
+      />
+    </div>
+    <el-dialog
+      title="选择图片"
+      v-model="dialogVisible"
+      class="chooseImagedDialogClass"
+      width="80%"
+      top="5vh"
+    >
+      <el-container class="bg-white rounded container" style="height: 70vh">
+        <el-container>
+          <image-aside ref="imageAsideRef" />
+          <image-main
+            ref="imageMainRef"
+            :isChoose="true"
+            @choose="handleChoose"
+          />
+        </el-container>
+      </el-container>
+      <template #footer>
+        <el-button @click="close">取消</el-button>
+        <el-button type="primary" @click="submit">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
-  <el-dialog title="选择图片" v-model="dialogVisible" width="80%" top="5vh">
-    <span>1111</span>
-    <template #footer>
-      <el-button @click="dialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="submit">确定</el-button>
-    </template>
-  </el-dialog>
 </template>
 
 <script setup>
-import { ref } from "vue";
-
+import { ref, watch } from "vue";
+import ImageAside from "@/components/ImageAside.vue";
+import ImageMain from "@/components/ImageMain.vue";
+const imageMainRef = ref(null);
+const imageAsideRef = ref(null);
 const dialogVisible = ref(false);
+const imageUrl = ref("");
+let url = "";
+const handleChoose = (imageUrl) => {
+  if (imageUrl) url = imageUrl;
+};
+const emits = defineEmits(["ChooseImage"]);
+const props = defineProps({
+  Image: {
+    type: String,
+  },
+});
 const open = () => {
   dialogVisible.value = true;
 };
-const submit = () => {};
+
+const close = () => {
+  dialogVisible.value = false;
+  imageMainRef.value.resetChecked();
+};
+const submit = () => {
+  imageUrl.value = url;
+  emits("ChooseImage", imageUrl.value);
+  close();
+};
+watch(
+  () => props.Image,
+  (newVal, oldVal) => {
+    imageUrl.value = newVal;
+  }
+);
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .choose-image-btn {
-  @apply w-[100px] h-[100px] rounded  flex justify-center items-center cursor-pointer hover:(bg-gray-100);
+  @apply w-[100px] h-[100px] rounded  flex justify-center items-center cursor-pointer hover:(bg-gray-100) overflow-hidden;
   border: 0.5px solid rgba(107, 114, 128, 0.3);
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.chooseImagedDialogClass {
+  .el-dialog__body {
+    padding: 0 !important;
+  }
 }
 </style>
