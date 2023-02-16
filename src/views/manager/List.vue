@@ -138,25 +138,42 @@
       :title="isEdit ? '编辑' : '新增'"
       ref="formDrawerRef"
       @submit="handleSubmit"
+      @reset="reset"
     >
       <el-form
         :model="createForm"
         ref="DrawerRef"
         :rules="rules"
-        label-width="80px"
+        label-width="100px"
         :inline="false"
       >
-        <el-form-item label="公告标题" prop="title">
+        <el-form-item label="用户名" prop="username">
           <el-input
-            v-model="createForm.title"
-            placeholder="请输入公告标题"
+            v-model="createForm.username"
+            placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
-        <el-form-item label="公告内容" prop="content">
-          <el-input
-            v-model="createForm.content"
-            type="textarea"
-            placeholder="请输入公告内容"
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="createForm.password" placeholder="请输入密码" />
+        </el-form-item>
+        <el-form-item label="头像" prop="avatar">
+          <ChooseImage></ChooseImage>
+        </el-form-item>
+        <el-form-item label="所属管理员" prop="role_id">
+          <el-select v-model="createForm.role_id" placeholder="请选择管理员">
+            <el-option
+              v-for="item in selectData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-switch
+            v-model="createForm.status"
+            :active-value="1"
+            :inactive-value="0"
           />
         </el-form-item>
       </el-form>
@@ -167,10 +184,10 @@
 <script setup>
 import { onMounted, ref, reactive, nextTick, toRaw } from "vue";
 import moment from "moment";
-import noticeApi from "@/api/notice";
 import adminApi from "@/api/admin";
 import { notification } from "@/utils/utils";
 import FormDrawer from "@/components/FormDrawer.vue";
+import ChooseImage from "@/components/ChooseImage.vue";
 const queryformRef = ref(null);
 const queryform = reactive({
   keyword: "",
@@ -189,27 +206,36 @@ const isEdit = ref(false);
 const resetForm = () => {
   if (DrawerRef.value) DrawerRef.value.clearValidate();
 };
+const reset = () => {
+  if (DrawerRef.value) DrawerRef.value.resetFields();
+};
+const selectData = ref([]);
 const createForm = reactive({
   editId: null,
-  title: "",
-  content: "",
+  username: "",
+  password: "",
+  role_id: null,
+  status: 1,
+  avatar: "",
 });
-const rules = {
-  title: [
+const rules = reactive({
+  username: [
     {
       required: true,
-      message: "公告标题不能为空",
+      message: "用户名不能为空",
       trigger: "blur",
     },
+    { min: 3, max: 5, message: "用户名的长度在3~5位", trigger: "blur" },
   ],
-  content: [
+  password: [
     {
       required: true,
-      message: "公告内容不能为空",
+      message: "用户密码不能为空",
       trigger: "blur",
     },
+    { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
   ],
-};
+});
 
 // 表格列头
 const columns = [
@@ -235,6 +261,7 @@ const getData = async (param = pager, data) => {
   try {
     const res = await adminApi.getManagers(param, data);
     pager.total = res.totalCount;
+    selectData.value = res.roles;
     tableData.value = res.list.map((item) => {
       item.statusLoading = false;
       return item;
@@ -248,7 +275,7 @@ const getData = async (param = pager, data) => {
 const handleDelete = async (id) => {
   loading.value = true;
   try {
-    const res = await noticeApi.deleteNotice(id);
+    const res = await adminApi.deleteManager(id);
     if (res) {
       notification("删除成功");
       getData();
@@ -267,15 +294,18 @@ const handleCreate = async () => {
   formDrawerRef.value.open();
 };
 // 编辑
-const handleEdit = (row) => {
+const handleEdit = async (row) => {
   isEdit.value = true;
   resetForm();
   formDrawerRef.value.open();
   nextTick(() => {
     Object.assign(createForm, {
-      title: row.title,
-      content: row.content,
       editId: row.id,
+      username: row.username,
+      password: row.password,
+      role_id: row.role_id,
+      status: row.status,
+      avatar: row.avatar,
     });
   });
 };
@@ -287,7 +317,6 @@ const handleStatusChange = async (status, row) => {
     if (res) {
       notification("状态修改成功");
       row.status = status;
-      // getData();
     } else {
       notification("状态修改失败", "error");
     }
@@ -312,7 +341,7 @@ const handleQueryRest = () => {
 const resetLoading = () => {
   formDrawerRef.value.hideLoading();
   formDrawerRef.value.close();
-  DrawerRef.value.resetFields();
+  reset();
 };
 // 提交
 // 提交表单
@@ -324,21 +353,24 @@ const handleSubmit = () => {
     try {
       let res;
       if (!isEdit.value) {
-        res = await noticeApi.setNotice(createForm);
+        res = await adminApi.setManager(createForm);
         if (res) text = "新增";
         pager.page = 1;
       } else {
-        res = await noticeApi.updateNotice(createForm.editId, {
-          title: createForm.title,
-          content: createForm.content,
+        res = await adminApi.updateManager(createForm.editId, {
+          username: createForm.username,
+          password: createForm.password,
+          role_id: createForm.role_id,
+          status: createForm.status,
+          avatar: createForm.avatar,
         });
         if (res) text = "编辑";
       }
       resetLoading();
       await getData();
-      notification(`${text}公告成功`);
+      notification(`${text}管理员成功`);
     } catch (error) {
-      notification(`${text}公告失败`, "error");
+      notification(`${text}管理员失败`, "error");
       resetLoading();
     }
   });

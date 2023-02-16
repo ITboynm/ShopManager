@@ -27,6 +27,7 @@
     :title="isEdit ? '编辑' : '新增'"
     ref="formDrawerRef"
     @submit="handleSubmit"
+    @reset="rest"
   >
     <el-form
       :model="createForm"
@@ -75,6 +76,9 @@ const isEdit = ref(false);
 const resetForm = () => {
   if (DrawerRef.value) DrawerRef.value.clearValidate();
 };
+const rest = () => {
+  DrawerRef.value.resetFields();
+};
 const rules = {
   name: [
     {
@@ -113,7 +117,7 @@ const getData = async (param = { page: pager.page, limit: pager.limit }) => {
 // 编辑
 const handleEdit = (row) => {
   isEdit.value = true;
-  resetForm()
+  resetForm();
   formDrawerRef.value.open();
   nextTick(() => {
     Object.assign(createForm, {
@@ -149,7 +153,7 @@ const handleChangeActiveId = (id) => {
 // 添加
 const handleCreate = () => {
   isEdit.value = false;
-  resetForm()
+  resetForm();
   formDrawerRef.value.open();
 };
 // 初始化状态

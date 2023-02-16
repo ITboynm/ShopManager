@@ -41,18 +41,19 @@ const props = defineProps({
     default: "提交",
   },
 });
+const emits = defineEmits(["reset", "submit"]);
 // 打开
 const open = () => (showDrawer.value = true);
 
 // 关闭
-const close = () => (showDrawer.value = false);
+const close = () => {
+  showDrawer.value = false;
+  emits("reset");
+};
 
 const showLoading = () => (loading.value = true);
 
 const hideLoading = () => (loading.value = false);
-//提交
-const emit = defineEmits(["submit"]);
-
 
 // 向父组件暴露以下方法
 defineExpose({

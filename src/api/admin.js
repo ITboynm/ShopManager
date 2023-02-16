@@ -34,7 +34,7 @@ export default {
       url: "/updatepassword",
       method: "post",
       data: params,
-      mock: true,
+      // mock: false,
     });
   },
   // 获取管理员列表
@@ -43,7 +43,7 @@ export default {
       url: `/manager/${page}?limit=${limit}`,
       method: "get",
       data: params,
-      mock: true,
+      // mock: false,
     });
   },
   // 修改管理员状态
@@ -52,7 +52,34 @@ export default {
       url: `/manager/${id}/update_status`,
       method: "post",
       data: params,
-      mock: true,
+      // mock: false,
+    });
+  },
+  // 新增管理员
+  setManager(params) {
+    return request({
+      url: `/manager`,
+      method: "post",
+      data: params,
+      // mock: false,
+    });
+  },
+  // 修改管理员
+  updateManager(id, params) {
+    return request({
+      url: `/manager/${id}`,
+      method: "post",
+      data: params,
+      // mock: false,
+    });
+  },
+   // 删除管理员
+   deleteManager(id, params) {
+    return request({
+      url: `/manager/${id}/delete`,
+      method: "post",
+      data: params,
+      // mock: false,
     });
   },
 };
