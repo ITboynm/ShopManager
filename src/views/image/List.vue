@@ -1,10 +1,10 @@
 <template>
   <el-container class="bg-white rounded" :style="{ height: `${h}px` }">
     <el-header class="image-header">
-      <el-button type="primary" size="small" @click="handleOpenCreate"
+      <el-button type="primary" size="small" @click="handleOpenCreate" icon="Plus"
         >新增图库分类</el-button
       >
-      <el-button type="warning" size="small" @click="handleOpenUploadFile"
+      <el-button type="warning" size="small" @click="handleOpenUploadFile" icon="UploadFilled"
         >上传图片</el-button
       >
     </el-header>

@@ -7,7 +7,7 @@
     >
       <!-- 新增和刷新 -->
       <div class="flex items-center justify-between mb-4">
-        <el-button type="primary" size="small" @click="handleCreate"
+        <el-button type="primary" size="small" @click="handleCreate" icon="Plus"
           >新增</el-button
         >
         <el-tooltip effect="dark" content="刷新数据" placement="top">

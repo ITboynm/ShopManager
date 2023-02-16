@@ -21,7 +21,7 @@
     >
       <el-container class="bg-white rounded container" style="height: 70vh">
         <el-container>
-          <image-aside ref="imageAsideRef" />
+          <image-aside ref="imageAsideRef"  :isChoose="true" />
           <image-main
             ref="imageMainRef"
             :isChoose="true"

@@ -1,8 +1,14 @@
 <template>
-  <el-aside width="220px" class="image-aside" v-loading="loading">
+  <el-aside
+    width="220px"
+    class="image-aside"
+    :class="{ isChoose }"
+    v-loading="loading"
+  >
     <div class="top">
       <aside-list
         v-for="(item, index) in imageList"
+        :isChoose="isChoose"
         :key="index"
         :active="activeId == item.id"
         @edit="handleEdit(item)"
@@ -60,7 +66,12 @@ import {
   getCurrentInstance,
 } from "vue";
 import { notification, showModal } from "@/utils/utils";
-
+defineProps({
+  isChoose: {
+    type: Boolean,
+    default: false,
+  },
+});
 const {
   appContext: {
     config: { globalProperties: ctx },
@@ -211,6 +222,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+.isChoose {
+  border-right: none !important;
+}
 .image-aside {
   border-right: 1px solid #eee;
   position: relative;

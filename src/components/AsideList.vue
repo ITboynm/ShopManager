@@ -3,11 +3,13 @@
     <span class="truncate">
       <slot></slot>
     </span>
+    <el-icon  class="ml-auto px-1" :size="20" v-if="isChoose"><CaretRight /></el-icon>
     <el-button
       class="ml-auto px-1"
       text
       type="primary"
       size="small"
+      v-if="!isChoose"
       @click.stop="$emit('edit')"
     >
       <el-icon :size="12">
@@ -26,6 +28,7 @@
           text
           class="px-1"
           type="primary"
+          v-if="!isChoose"
           @click.native.stop
           size="small"
         >
@@ -44,12 +47,19 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  isChoose: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 defineEmits(["edit", "delete"]);
 </script>
 
 <style scoped lang="scss">
+.isChoose {
+  justify-content: flex-start !important;
+}
 .aside-list {
   border-bottom: 1px solid #f4f4f4;
   cursor: pointer;

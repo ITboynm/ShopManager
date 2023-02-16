@@ -31,6 +31,7 @@
                 @change="handleChooseChange(item)"
               ></el-checkbox>
               <el-button
+                v-if="!isChoose"
                 type="primary"
                 size="small"
                 text
@@ -45,7 +46,12 @@
                 @confirm="handleImageDelete(item.id)"
               >
                 <template #reference>
-                  <el-button type="primary" size="small" text style="margin: 0"
+                  <el-button
+                    type="primary"
+                    size="small"
+                    text
+                    style="margin: 0"
+                    v-if="!isChoose"
                     >删除</el-button
                   >
                 </template>
