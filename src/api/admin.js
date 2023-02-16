@@ -46,4 +46,13 @@ export default {
       mock: true,
     });
   },
+  // 修改管理员状态
+  updateManagerState(id, params) {
+    return request({
+      url: `/manager/${id}/update_status`,
+      method: "post",
+      data: params,
+      mock: true,
+    });
+  },
 };

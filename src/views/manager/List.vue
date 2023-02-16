@@ -85,33 +85,41 @@
               :model-value="row.status"
               :active-value="1"
               :inactive-value="0"
+              :loading="row.statusLoading"
+              :disabled="row.super == 1"
+              @change="handleStatusChange($event, row)"
             >
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template #default="scope">
-            <el-button
-              size="small"
-              type="primary"
-              text
-              icon="EditPen"
-              @click="handleEdit(scope.row)"
-              >修改</el-button
+            <small v-if="scope.row.super == 1" class="text-sm text-gray-500"
+              >暂无操作</small
             >
-            <el-popconfirm
-              title="是否删除该管理员?"
-              confirm-button-text="确认"
-              cancel-button-text="取消"
-              width="158px"
-              @confirm="handleDelete(scope.row.id)"
-            >
-              <template #reference>
-                <el-button size="small" type="primary" icon="Delete" text
-                  >删除</el-button
-                >
-              </template>
-            </el-popconfirm>
+            <div v-else>
+              <el-button
+                size="small"
+                type="primary"
+                text
+                icon="EditPen"
+                @click="handleEdit(scope.row)"
+                >修改</el-button
+              >
+              <el-popconfirm
+                title="是否删除该管理员?"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                width="158px"
+                @confirm="handleDelete(scope.row.id)"
+              >
+                <template #reference>
+                  <el-button size="small" type="primary" icon="Delete" text
+                    >删除</el-button
+                  >
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -157,7 +165,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive, nextTick } from "vue";
+import { onMounted, ref, reactive, nextTick, toRaw } from "vue";
 import moment from "moment";
 import noticeApi from "@/api/notice";
 import adminApi from "@/api/admin";
@@ -227,7 +235,10 @@ const getData = async (param = pager, data) => {
   try {
     const res = await adminApi.getManagers(param, data);
     pager.total = res.totalCount;
-    tableData.value = res.list;
+    tableData.value = res.list.map((item) => {
+      item.statusLoading = false;
+      return item;
+    });
     loading.value = false;
   } catch (error) {
     loading.value = false;
@@ -267,6 +278,24 @@ const handleEdit = (row) => {
       editId: row.id,
     });
   });
+};
+// 修改状态
+const handleStatusChange = async (status, row) => {
+  row.statusLoading = true;
+  try {
+    const res = await adminApi.updateManagerState(row.id, { status });
+    if (res) {
+      notification("状态修改成功");
+      row.status = status;
+      // getData();
+    } else {
+      notification("状态修改失败", "error");
+    }
+    row.statusLoading = false;
+  } catch (error) {
+    notification("状态修改失败", "error");
+    row.statusLoading = false;
+  }
 };
 // 查询
 const handleQuery = () => {
