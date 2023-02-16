@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="choose-image-btn" @click="open">
-      <el-icon v-if="!imageUrl" :size="25" color="rgba(107, 114, 128, 0.5)"
+      <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)"
         ><Plus
       /></el-icon>
       <el-image
         v-else
-        :src="imageUrl"
+        :src="avatar"
         alt=""
         :fit="cover"
         class="h-[100%] w-[100%]"
@@ -44,17 +44,15 @@ import ImageMain from "@/components/ImageMain.vue";
 const imageMainRef = ref(null);
 const imageAsideRef = ref(null);
 const dialogVisible = ref(false);
-const imageUrl = ref("");
-let url = "";
+let imageURL = "";
 const handleChoose = (imageUrl) => {
-  if (imageUrl) url = imageUrl;
+  if (imageUrl) imageURL = imageUrl;
 };
-const emits = defineEmits(["ChooseImage"]);
 const props = defineProps({
-  Image: {
-    type: String,
-  },
+  avatar: [String, Array],
 });
+const emits = defineEmits(["update:avatar"]);
+
 const open = () => {
   dialogVisible.value = true;
 };
@@ -64,16 +62,9 @@ const close = () => {
   imageMainRef.value.resetChecked();
 };
 const submit = () => {
-  imageUrl.value = url;
-  emits("ChooseImage", imageUrl.value);
+  emits("update:avatar", imageURL);
   close();
 };
-watch(
-  () => props.Image,
-  (newVal, oldVal) => {
-    imageUrl.value = newVal;
-  }
-);
 </script>
 
 <style lang="scss">

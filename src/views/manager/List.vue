@@ -158,8 +158,7 @@
         </el-form-item>
         <el-form-item label="头像" prop="avatar">
           <ChooseImage
-            @ChooseImage="setImage"
-            :Image="createForm.avatar"
+          v-model:avatar="createForm.avatar"
           ></ChooseImage>
         </el-form-item>
         <el-form-item label="所属管理员" prop="role_id">
@@ -239,9 +238,6 @@ const rules = reactive({
     { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
   ],
 });
-const setImage = (avatar) => {
-  createForm.avatar = avatar;
-};
 // 表格列头
 const columns = [
   {
