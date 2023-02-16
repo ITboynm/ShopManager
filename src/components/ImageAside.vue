@@ -111,6 +111,7 @@ const pager = reactive({
   limit: 10,
   total: 0,
 });
+
 // 获取数据
 const getData = async (param = { page: pager.page, limit: pager.limit }) => {
   loading.value = true;
@@ -173,6 +174,7 @@ const resetLoading = () => {
   formDrawerRef.value.close();
   DrawerRef.value.resetFields();
 };
+
 // 提交表单
 const handleSubmit = () => {
   DrawerRef.value.validate(async (valid, fields) => {
@@ -207,9 +209,13 @@ const changeCurrent = async (cur) => {
   await getData(toRaw(pager));
   ctx.$EventBus.emit("changeImageActive", activeId.value);
 };
-
+const initActiveID = () => {
+  activeId.value = imageList.value[0].id;
+  ctx.$EventBus.emit("changeImageActive", activeId.value);
+};
 defineExpose({
   handleCreate,
+  initActiveID,
 });
 onMounted(async () => {
   await getData();

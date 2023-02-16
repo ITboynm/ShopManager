@@ -55,6 +55,7 @@ const emits = defineEmits(["update:avatar"]);
 
 const open = () => {
   dialogVisible.value = true;
+  imageAsideRef.value.initActiveID()
 };
 
 const close = () => {
