@@ -10,7 +10,7 @@
       inline
       size="normal"
     >
-      <el-form-item label="">
+      <el-form-item label="" prop="keyword">
         <el-input
           v-model="queryform.keyword"
           class="w-[200px]"
@@ -157,9 +157,7 @@
           <el-input v-model="createForm.password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="头像" prop="avatar">
-          <ChooseImage
-          v-model:avatar="createForm.avatar"
-          ></ChooseImage>
+          <ChooseImage v-model:avatar="createForm.avatar"></ChooseImage>
         </el-form-item>
         <el-form-item label="所属管理员" prop="role_id">
           <el-select v-model="createForm.role_id" placeholder="请选择管理员">
@@ -190,36 +188,7 @@ import adminApi from "@/api/admin";
 import { notification } from "@/utils/utils";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
-const queryformRef = ref(null);
-const queryform = reactive({
-  keyword: "",
-});
-// 分页参数
-const pager = reactive({
-  page: 1,
-  limit: 10,
-  total: 0,
-});
-const loading = ref(false);
-const tableData = ref([]);
-const formDrawerRef = ref(null);
-const DrawerRef = ref(null);
-const isEdit = ref(false);
-const resetForm = () => {
-  if (DrawerRef.value) DrawerRef.value.clearValidate();
-};
-const reset = () => {
-  if (DrawerRef.value) DrawerRef.value.resetFields();
-};
-const selectData = ref([]);
-const createForm = reactive({
-  editId: null,
-  username: "",
-  password: "",
-  role_id: null,
-  status: 1,
-  avatar: "",
-});
+import { useTableInit, useInitForm } from "@/composables/useCommon";
 const rules = reactive({
   username: [
     {
@@ -257,21 +226,58 @@ const columns = [
     },
   },
 ];
-const getData = async (param = pager, data) => {
-  loading.value = true;
-  try {
-    const res = await adminApi.getManagers(param, data);
+const selectData = ref([]);
+
+// 初始化表格数据、搜索、分页
+const {
+  getData,
+  handleQuery,
+  handleQueryRest,
+  changeCurrent,
+  loading,
+  queryform,
+  queryformRef,
+  tableData,
+  pager,
+} = useTableInit({
+  queryApi: adminApi.getManagers,
+  queryform: {
+    keyword: "",
+  },
+  onSuccessInit: (res) => {
     pager.total = res.totalCount;
     selectData.value = res.roles;
     tableData.value = res.list.map((item) => {
       item.statusLoading = false;
       return item;
     });
-    loading.value = false;
-  } catch (error) {
-    loading.value = false;
-  }
-};
+  },
+});
+
+const {
+  formDrawerRef,
+  DrawerRef,
+  isEdit,
+  createForm,
+  handleCreate,
+  handleEdit,
+  handleSubmit,
+} = useInitForm({
+  text: "管理员",
+  createForm: {
+    editId: null,
+    username: "",
+    password: "",
+    role_id: null,
+    status: 1,
+    avatar: "",
+  },
+  createApi: adminApi.setManager,
+  editApi: adminApi.updateManager,
+  getData,
+  pager
+});
+
 // 删除
 const handleDelete = async (id) => {
   loading.value = true;
@@ -288,27 +294,6 @@ const handleDelete = async (id) => {
     notification("删除失败", "error");
     loading.value = false;
   }
-};
-// 新增
-const handleCreate = async () => {
-  resetForm();
-  formDrawerRef.value.open();
-};
-// 编辑
-const handleEdit = async (row) => {
-  isEdit.value = true;
-  resetForm();
-  formDrawerRef.value.open();
-  nextTick(() => {
-    Object.assign(createForm, {
-      editId: row.id,
-      username: row.username,
-      password: row.password,
-      role_id: row.role_id,
-      status: row.status,
-      avatar: row.avatar,
-    });
-  });
 };
 // 修改状态
 const handleStatusChange = async (status, row) => {
@@ -327,66 +312,10 @@ const handleStatusChange = async (status, row) => {
     row.statusLoading = false;
   }
 };
-// 查询
-const handleQuery = () => {
-  queryform.keyword
-    ? getData(pager, { keyword: queryform.keyword })
-    : getData();
-};
-// 重置
-const handleQueryRest = () => {
-  queryform.keyword = "";
-  getData();
-};
-// 初始化状态
-const resetLoading = () => {
-  formDrawerRef.value.hideLoading();
-  formDrawerRef.value.close();
-  reset();
-};
-// 提交
-// 提交表单
-const handleSubmit = () => {
-  DrawerRef.value.validate(async (valid, fields) => {
-    if (!valid) return false;
-    formDrawerRef.value.showLoading();
-    let text = "操作";
-    try {
-      let res;
-      if (!isEdit.value) {
-        res = await adminApi.setManager(createForm);
-        if (res) text = "新增";
-        pager.page = 1;
-      } else {
-        res = await adminApi.updateManager(createForm.editId, {
-          username: createForm.username,
-          password: createForm.password,
-          role_id: createForm.role_id,
-          status: createForm.status,
-          avatar: createForm.avatar,
-        });
-        if (res) text = "编辑";
-      }
-      resetLoading();
-      await getData();
-      notification(`${text}管理员成功`);
-    } catch (error) {
-      notification(`${text}管理员失败`, "error");
-      resetLoading();
-    }
-  });
-};
-const changeCurrent = async (cur) => {
-  pager.page = cur;
-  await getData(toRaw(pager));
-};
 // 获取浏览器可视区范围
 const windowHeight = window.innerHeight || document.body.clientHeight;
 // 获取展示区高度
 const h = windowHeight - 60 - 44 - 22 - 78;
-onMounted(() => {
-  getData();
-});
 </script>
 
 <style scoped lang="scss">
