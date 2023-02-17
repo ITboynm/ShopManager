@@ -51,6 +51,7 @@
                   size="small"
                   icon="EditPen"
                   class="ml-12"
+                  @click.stop="handleEdit(data)"
                   >修改</el-button
                 >
                 <el-button text type="warning" size="small" icon="Plus"
@@ -74,21 +75,42 @@
         :model="createForm"
         ref="DrawerRef"
         :rules="rules"
-        label-width="80px"
+        label-width="100px"
         :inline="false"
       >
-        <el-form-item label="公告标题" prop="title">
-          <el-input
-            v-model="createForm.title"
-            placeholder="请输入公告标题"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="公告内容" prop="content">
-          <el-input
-            v-model="createForm.content"
-            type="textarea"
-            placeholder="请输入公告内容"
+        <el-form-item label="上级菜单" prop="rule_id">
+          <el-cascader
+            v-model="createForm.rule_id"
+            :options="selectRules"
+            :props="{
+              label: 'name',
+              children: 'child',
+              checkStrictly: true,
+              emitPath: false,
+            }"
+            placeholder="请选择上级菜单"
           />
+        </el-form-item>
+        <el-form-item label="菜单/规则" prop="menu">
+          <el-input v-model="createForm.menu"></el-input>
+        </el-form-item>
+        <el-form-item label="菜单权限名称" prop="name">
+          <el-input v-model="createForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="菜单图标" prop="icon">
+          <el-input v-model="createForm.icon"></el-input>
+        </el-form-item>
+        <el-form-item label="前端路由" prop="frontpath">
+          <el-input v-model="createForm.frontpath"></el-input>
+        </el-form-item>
+        <el-form-item label="后端规则" prop="condition">
+          <el-input v-model="createForm.condition"></el-input>
+        </el-form-item>
+        <el-form-item label="请求方式" prop="method">
+          <el-input v-model="createForm.method"></el-input>
+        </el-form-item>
+        <el-form-item label="排序" prop="order">
+          <el-input v-model="createForm.order"></el-input>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -102,10 +124,12 @@ import ruleApi from "@/api/rule";
 import { ref } from "vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
 const defaultExpandedKeys = ref([]);
+const selectRules = ref([]);
 const { getData, handleDelete, changeCurrent, loading, tableData, pager } =
   useTableInit({
     queryApi: ruleApi.getRules,
     onSuccessInit: (res) => {
+      selectRules.value = res.rules;
       pager.total = res.totalCount;
       tableData.value = res.list;
       defaultExpandedKeys.value = res.list.map((item) => item.id);
