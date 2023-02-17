@@ -100,30 +100,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive, nextTick } from "vue";
 import moment from "moment";
 import noticeApi from "@/api/notice";
 import { notification } from "@/utils/utils";
 import FormDrawer from "@/components/FormDrawer.vue";
-// 分页参数
-const pager = reactive({
-  page: 1,
-  limit: 10,
-  total: 0,
-});
-const loading = ref(false);
-const tableData = ref([]);
-const formDrawerRef = ref(null);
-const DrawerRef = ref(null);
-const isEdit = ref(false);
-const resetForm = () => {
-  if (DrawerRef.value) DrawerRef.value.clearValidate();
-};
-const createForm = reactive({
-  editId: null,
-  title: "",
-  content: "",
-});
+import { useTableInit, useInitForm } from "@/composables/useCommon";
 const rules = {
   title: [
     {
@@ -140,17 +121,6 @@ const rules = {
     },
   ],
 };
-// 测试数据
-// const testData = [
-//   {
-//     id: 13,
-//     title: "nip",
-//     content: "nip\n",
-//     order: 0,
-//     create_time: "2022-06-06 14:40:11",
-//     update_time: "2022-06-06 14:40:11",
-//   },
-// ];
 
 // 表格列头
 const columns = [
@@ -167,97 +137,40 @@ const columns = [
     },
   },
 ];
-const getData = async (param = pager) => {
-  loading.value = true;
-  try {
-    const res = await noticeApi.getNotices(param);
-    pager.total = res.totalCount;
-    tableData.value = res.list;
-    loading.value = false;
-  } catch (error) {
-    loading.value = false;
-  }
-};
-// 删除
-const handleDelete = async (id) => {
-  loading.value = true;
-  try {
-    const res = await noticeApi.deleteNotice(id);
-    if (res) {
-      notification("删除成功");
-      getData();
-    } else {
-      notification("删除失败", "error");
-    }
-    loading.value = false;
-  } catch (error) {
-    notification("删除失败", "error");
-    loading.value = false;
-  }
-};
-// 新增
-const handleCreate = async () => {
-  resetForm();
-  formDrawerRef.value.open();
-};
-const handleEdit = (row) => {
-  isEdit.value = true;
-  resetForm();
-  formDrawerRef.value.open();
-  nextTick(() => {
-    Object.assign(createForm, {
-      title: row.title,
-      content: row.content,
-      editId: row.id,
-    });
-  });
-};
-// 初始化状态
-const resetLoading = () => {
-  formDrawerRef.value.hideLoading();
-  formDrawerRef.value.close();
-  DrawerRef.value.resetFields();
-};
-// 提交
-// 提交表单
-const handleSubmit = () => {
-  DrawerRef.value.validate(async (valid, fields) => {
-    if (!valid) return false;
-    formDrawerRef.value.showLoading();
-    let text = "操作";
-    try {
-      let res;
-      if (!isEdit.value) {
-        res = await noticeApi.setNotice(createForm);
-        if (res) text = "新增";
-        pager.page = 1;
-      } else {
-        res = await noticeApi.updateNotice(createForm.editId, {
-          title: createForm.title,
-          content: createForm.content,
-        });
-        if (res) text = "编辑";
-      }
-      resetLoading();
-      await getData();
-      notification(`${text}公告成功`);
-    } catch (error) {
-      notification(`${text}公告失败`, "error");
-      resetLoading();
-    }
-  });
-};
-const changeCurrent = async (cur) => {
-  pager.page = cur;
-  await getData(toRaw(pager));
-};
+const { getData,handleDelete, changeCurrent, loading, tableData, pager } = useTableInit({
+  queryApi: noticeApi.getNotices,
+  deleteApi:noticeApi.deleteNotice
+});
+
+const {
+  formDrawerRef,
+  DrawerRef,
+  isEdit,
+  createForm,
+  handleCreate,
+  handleEdit,
+  handleSubmit,
+} = useInitForm({
+  text: "公告",
+  createForm: {
+    editId: null,
+    username: "",
+    password: "",
+    role_id: null,
+    status: 1,
+    avatar: "",
+  },
+  createApi: noticeApi.setNotice,
+  editApi: noticeApi.updateNotice,
+  getData,
+  pager,
+});
+
+
 // 获取浏览器可视区范围
 const windowHeight = window.innerHeight || document.body.clientHeight;
 // 获取展示区高度
 const h = windowHeight - 60 - 44 - 22;
-onMounted(() => {
-  getData();
-});
 </script>
 
 <style scoped lang="scss">

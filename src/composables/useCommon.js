@@ -6,7 +6,7 @@ import { notification } from "@/utils/utils";
  * @returns
  */
 
-// 初始化搜索与分页
+// 初始化搜索与分页，删除与修改状态
 export function useTableInit(options = {}) {
   // 搜索表单组件
   const queryformRef = ref(null);
@@ -63,7 +63,40 @@ export function useTableInit(options = {}) {
     pager.page = cur;
     await getData(toRaw(pager));
   };
-
+  // 删除
+  const handleDelete = async (id) => {
+    loading.value = true;
+    try {
+      const res = await options.deleteApi(id);
+      if (res) {
+        notification("删除成功");
+        getData();
+      } else {
+        notification("删除失败", "error");
+      }
+      loading.value = false;
+    } catch (error) {
+      notification("删除失败", "error");
+      loading.value = false;
+    }
+  };
+  // 修改状态
+  const handleStatusChange = async (status, row) => {
+    row.statusLoading = true;
+    try {
+      const res = await options.updateStateApi(row.id, { status });
+      if (res) {
+        notification("状态修改成功");
+        row.status = status;
+      } else {
+        notification("状态修改失败", "error");
+      }
+      row.statusLoading = false;
+    } catch (error) {
+      notification("状态修改失败", "error");
+      row.statusLoading = false;
+    }
+  };
   onMounted(() => {
     getData();
   });
@@ -73,6 +106,8 @@ export function useTableInit(options = {}) {
     handleQuery,
     handleQueryRest,
     changeCurrent,
+    handleDelete,
+    handleStatusChange,
     loading,
     queryform,
     queryformRef,
@@ -107,7 +142,7 @@ export function useInitForm(options = {}) {
     formDrawerRef.value.open();
     nextTick(() => {
       Object.assign(createForm, row);
-      createForm.editId = row.id; 
+      createForm.editId = row.id;
     });
   };
 
@@ -156,3 +191,5 @@ export function useInitForm(options = {}) {
     handleSubmit,
   };
 }
+
+// 初始化删除

@@ -182,7 +182,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive, nextTick, toRaw } from "vue";
+import { ref, reactive } from "vue";
 import moment from "moment";
 import adminApi from "@/api/admin";
 import { notification } from "@/utils/utils";
@@ -228,11 +228,13 @@ const columns = [
 ];
 const selectData = ref([]);
 
-// 初始化表格数据、搜索、分页
+// 初始化表格数据、搜索、分页、删除、状态
 const {
   getData,
   handleQuery,
   handleQueryRest,
+  handleDelete,
+  handleStatusChange,
   changeCurrent,
   loading,
   queryform,
@@ -241,6 +243,8 @@ const {
   pager,
 } = useTableInit({
   queryApi: adminApi.getManagers,
+  deleteApi: adminApi.deleteManager,
+  updateStateApi: adminApi.updateManagerState,
   queryform: {
     keyword: "",
   },
@@ -275,43 +279,9 @@ const {
   createApi: adminApi.setManager,
   editApi: adminApi.updateManager,
   getData,
-  pager
+  pager,
 });
 
-// 删除
-const handleDelete = async (id) => {
-  loading.value = true;
-  try {
-    const res = await adminApi.deleteManager(id);
-    if (res) {
-      notification("删除成功");
-      getData();
-    } else {
-      notification("删除失败", "error");
-    }
-    loading.value = false;
-  } catch (error) {
-    notification("删除失败", "error");
-    loading.value = false;
-  }
-};
-// 修改状态
-const handleStatusChange = async (status, row) => {
-  row.statusLoading = true;
-  try {
-    const res = await adminApi.updateManagerState(row.id, { status });
-    if (res) {
-      notification("状态修改成功");
-      row.status = status;
-    } else {
-      notification("状态修改失败", "error");
-    }
-    row.statusLoading = false;
-  } catch (error) {
-    notification("状态修改失败", "error");
-    row.statusLoading = false;
-  }
-};
 // 获取浏览器可视区范围
 const windowHeight = window.innerHeight || document.body.clientHeight;
 // 获取展示区高度
