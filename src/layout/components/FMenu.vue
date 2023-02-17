@@ -14,21 +14,18 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import TreeMenu from "../../components/TreeMenu.vue";
 import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 // 默认选中
 const activePath = ref(route.path);
-watch(
-  () => router.currentRoute.value.path,
-  (newValue, oldValue) => {
-    activePath.value = newValue;
-  },
-  { immediate: true }
-);
+
+onBeforeRouteUpdate((to, from) => {
+  activePath.value = to.path;
+});
 const store = useStore();
 // 是否展开
 const iscollapse = computed(() =>

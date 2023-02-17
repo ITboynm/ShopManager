@@ -6,8 +6,10 @@ import { notification } from "@/utils/utils";
  * @returns
  */
 
-// 初始化搜索与分页，删除与修改状态
+// 初始化搜索、分页、删除、修改状态
 export function useTableInit(options = {}) {
+  const queryRules = options.queryRules || []
+  const columns = options.columns || []
   // 搜索表单组件
   const queryformRef = ref(null);
   const queryform = reactive(options.queryform || {});
@@ -35,6 +37,7 @@ export function useTableInit(options = {}) {
       loading.value = false;
     } catch (error) {
       loading.value = false;
+      console.log(error);
     }
   };
 
@@ -108,6 +111,8 @@ export function useTableInit(options = {}) {
     changeCurrent,
     handleDelete,
     handleStatusChange,
+    queryRules,
+    columns,
     loading,
     queryform,
     queryformRef,
@@ -118,6 +123,7 @@ export function useTableInit(options = {}) {
 
 // 初始化新增与修改
 export function useInitForm(options = {}) {
+  const rules = options.rules || []
   const formDrawerRef = ref(null);
   const DrawerRef = ref(null);
   const isEdit = ref(false);
@@ -186,10 +192,10 @@ export function useInitForm(options = {}) {
     DrawerRef,
     isEdit,
     createForm,
+    rules,
     handleCreate,
     handleEdit,
     handleSubmit,
   };
 }
 
-// 初始化删除

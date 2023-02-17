@@ -24,7 +24,7 @@ export default {
     // 环境
     env,
     // 是否启动假数据
-    mock: false,
+    mock: true,
     // 命名空间 storage
     namespace: 'shopManager',
     // 对应环境的配置

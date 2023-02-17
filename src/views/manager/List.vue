@@ -34,26 +34,17 @@
     <el-card
       shadow="never"
       class="border-0 relative"
-      :style="{ height: `${h}px` }"
+      :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
     >
       <!-- 新增和刷新 -->
-      <div class="flex items-center justify-between mb-4">
-        <el-button type="primary" size="small" @click="handleCreate" icon="Plus"
-          >新增</el-button
-        >
-        <el-tooltip effect="dark" content="刷新数据" placement="top">
-          <el-button text @click="getData(pager)">
-            <el-icon :size="20"><Refresh /></el-icon>
-          </el-button>
-        </el-tooltip>
-      </div>
+      <ListHeader @create="handleCreate" @refresh="getData(pager)"></ListHeader>
 
       <el-table
         :data="tableData"
         stripe
         style="width: 100%"
         v-loading="loading"
-        :max-height="h - (48 + 80)"
+        :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)"
       >
         <el-table-column label="管理员" width="200">
           <template #default="{ row }">
@@ -185,47 +176,11 @@
 import { ref, reactive } from "vue";
 import moment from "moment";
 import adminApi from "@/api/admin";
-import { notification } from "@/utils/utils";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
+import ListHeader from "@/components/ListHeader.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-const rules = reactive({
-  username: [
-    {
-      required: true,
-      message: "用户名不能为空",
-      trigger: "blur",
-    },
-    { min: 3, max: 10, message: "用户名的长度在3~10位", trigger: "blur" },
-  ],
-  password: [
-    {
-      required: true,
-      message: "用户密码不能为空",
-      trigger: "blur",
-    },
-    { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
-  ],
-});
-// 表格列头
-const columns = [
-  {
-    label: "所属管理员",
-    prop: "role",
-    align: "center",
-    formatter: (row) => {
-      return row.role?.name || "-";
-    },
-  },
-  {
-    label: "创建时间",
-    prop: "create_time",
-    with: 380,
-    formatter: (row) => {
-      return moment(row.create_time).format("YYYY-MM-DD HH:mm:ss");
-    },
-  },
-];
+
 const selectData = ref([]);
 
 // 初始化表格数据、搜索、分页、删除、状态
@@ -239,6 +194,7 @@ const {
   loading,
   queryform,
   queryformRef,
+  columns,
   tableData,
   pager,
 } = useTableInit({
@@ -248,6 +204,24 @@ const {
   queryform: {
     keyword: "",
   },
+  columns: [
+    {
+      label: "所属管理员",
+      prop: "role",
+      align: "center",
+      formatter: (row) => {
+        return row.role?.name || "-";
+      },
+    },
+    {
+      label: "创建时间",
+      prop: "create_time",
+      with: 380,
+      formatter: (row) => {
+        return moment(row.create_time).format("YYYY-MM-DD HH:mm:ss");
+      },
+    },
+  ],
   onSuccessInit: (res) => {
     pager.total = res.totalCount;
     selectData.value = res.roles;
@@ -262,6 +236,7 @@ const {
   formDrawerRef,
   DrawerRef,
   isEdit,
+  rules,
   createForm,
   handleCreate,
   handleEdit,
@@ -276,16 +251,29 @@ const {
     status: 1,
     avatar: "",
   },
+  rules: {
+    username: [
+      {
+        required: true,
+        message: "用户名不能为空",
+        trigger: "blur",
+      },
+      { min: 3, max: 10, message: "用户名的长度在3~10位", trigger: "blur" },
+    ],
+    password: [
+      {
+        required: true,
+        message: "用户密码不能为空",
+        trigger: "blur",
+      },
+      { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
+    ],
+  },
   createApi: adminApi.setManager,
   editApi: adminApi.updateManager,
   getData,
   pager,
 });
-
-// 获取浏览器可视区范围
-const windowHeight = window.innerHeight || document.body.clientHeight;
-// 获取展示区高度
-const h = windowHeight - 60 - 44 - 22 - 78;
 </script>
 
 <style scoped lang="scss">
