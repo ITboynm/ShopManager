@@ -98,6 +98,14 @@ const asyncRoutes = [
         meta: {
             title: '菜单权限管理'
         }
+    },
+    {
+        path: '/role/list',
+        name: '/role/list',
+        component: () => import(/* webpackChunkName: "RoleList" */ '@/views/role/List.vue'),
+        meta: {
+            title: '角色管理'
+        }
     }
 ]
 
