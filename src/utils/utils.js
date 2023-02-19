@@ -49,10 +49,23 @@ const showFullLoading = () => {
 const hideFullLoading = () => {
   NProgress.done();
 };
+
+// 树形结构遍历加属性
+const recursionTree = (options) => {
+  options.arr.forEach(item => {
+    item[options.key] = options.value
+    if (item.child && item.child.length > 0) recursionTree({
+      arr: item.child,
+      key: options.key,
+      value: options.value
+    })
+  })
+}
 export {
   notification,
   showModal,
   showPromptModal,
   showFullLoading,
   hideFullLoading,
+  recursionTree
 };

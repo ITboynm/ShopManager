@@ -28,4 +28,22 @@ export default {
       // mock: false
     });
   },
+  // 删除菜单权限
+  deleteRule(id, params) {
+    return request({
+      url: `/rule/${id}/delete`,
+      method: "post",
+      data: params,
+      // mock: false
+    });
+  },
+  // 修改菜单权限状态
+  updateRuleStatus(id, params) {
+    return request({
+      url: `/rule/${id}/update_status`,
+      method: "post",
+      data: params,
+      // mock: false
+    });
+  },
 };
