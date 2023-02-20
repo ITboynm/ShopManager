@@ -20,7 +20,7 @@
         stripe
         style="width: 100%"
         v-loading="loading"
-        :max-height="$windowHeight - (48 + 80 + 60 + 44 + 22)"
+        :max-height="$windowHeight - (48 + 80 + 60 + 44 + 42)"
       >
         <el-table-column
           v-for="(item, index) in columns"

@@ -15,10 +15,10 @@
             <div class="flex items-center w-[100%]">
               <el-tag size="small" :type="data.menu ? '' : 'info'">
                 {{ data.menu ? "菜单" : "权限" }}</el-tag>
-              <el-icon v-if="data.icon" :size="16" class="mx-2">
+              <el-icon v-if="data.icon" :size="16" class="ml-2">
                 <component :is="data.icon"></component>
               </el-icon>
-              <span>{{ data.name }}</span>
+              <span class="ml-2">{{ data.name }}</span>
 
               <div class="ml-auto">
                 <el-switch :model-value="data.status" :active-value="1" :inactive-value="0"
@@ -107,7 +107,6 @@ const { getData, handleDelete, handleStatusChange, loading, tableData, pager } =
         key: 'statusLoading',
         value: false
       })
-      console.log(cloneList)
       tableData.value = cloneList;
       defaultExpandedKeys.value = res.list.map((item) => item.id);
     },

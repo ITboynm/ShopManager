@@ -177,10 +177,12 @@ export function useInitForm(options = {}) {
           if (res) text = "编辑";
         }
         resetLoading();
+        setRuleDrawerRef.value.hideLoading();
         await options.getData();
         notification(`${text}${options.text}成功`);
       } catch (error) {
         console.log(error);
+        setRuleDrawerRef.value.hideLoading();
         notification(`${text}${options.text}失败`, "error");
         resetLoading();
       }
