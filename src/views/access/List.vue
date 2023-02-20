@@ -4,7 +4,7 @@
       <template #header>
         <div>
           <!-- 新增和刷新 -->
-          <ListHeader @create="handleCreate" @refresh="getData(pager)"></ListHeader>
+          <ListHeader  layout="create,refresh" @create="handleCreate" @refresh="getData(pager)"></ListHeader>
         </div>
       </template>
       <!-- card body -->

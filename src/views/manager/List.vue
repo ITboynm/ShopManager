@@ -37,7 +37,7 @@
       :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
     >
       <!-- 新增和刷新 -->
-      <ListHeader @create="handleCreate" @refresh="getData(pager)"></ListHeader>
+      <ListHeader layout="create,refresh" @create="handleCreate" @refresh="getData(pager)"></ListHeader>
 
       <el-table
         :data="tableData"

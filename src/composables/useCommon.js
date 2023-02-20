@@ -139,6 +139,7 @@ export function useInitForm(options = {}) {
   // 新增
   const handleCreate = async () => {
     resetForm();
+    reset()
     formDrawerRef.value.open();
   };
   // 编辑
@@ -177,12 +178,12 @@ export function useInitForm(options = {}) {
           if (res) text = "编辑";
         }
         resetLoading();
-        setRuleDrawerRef.value.hideLoading();
+        formDrawerRef.value.hideLoading();
         await options.getData();
         notification(`${text}${options.text}成功`);
       } catch (error) {
         console.log(error);
-        setRuleDrawerRef.value.hideLoading();
+        formDrawerRef.value.hideLoading();
         notification(`${text}${options.text}失败`, "error");
         resetLoading();
       }

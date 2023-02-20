@@ -9,9 +9,10 @@
         <div>
           <!-- 新增和刷新 -->
           <ListHeader
-            layout="create,refresh"
+            layout="create,refresh,delete"
             @create="handleCreate"
             @refresh="getData(pager)"
+            @delete="handleDelete(multiSelectionIds)"
           ></ListHeader>
         </div>
       </template>
@@ -21,8 +22,10 @@
         stripe
         style="width: 100%"
         v-loading="loading"
+        @selection-change="handleSelectionChange"
         :max-height="$windowHeight - (48 + 80 + 60 + 44 + 42)"
       >
+        <el-table-column type="selection" width="55" />
         <el-table-column
           v-for="(item, index) in columns"
           :key="index"
@@ -49,20 +52,12 @@
               size="small"
               type="primary"
               text
-              icon="Setting"
-              @click="handleSetRule(scope.row)"
-              >配置权限</el-button
-            >
-            <el-button
-              size="small"
-              type="primary"
-              text
               icon="EditPen"
               @click="handleEdit(scope.row)"
               >修改</el-button
             >
             <el-popconfirm
-              title="是否删除该角色?"
+              title="是否删除该规格?"
               confirm-button-text="确认"
               cancel-button-text="取消"
               width="158px"
@@ -100,15 +95,11 @@
         label-width="80px"
         :inline="false"
       >
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="createForm.name" placeholder="角色名称"></el-input>
+        <el-form-item label="规格名称" prop="name">
+          <el-input v-model="createForm.name" placeholder="规格名称"></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" prop="desc">
-          <el-input
-            v-model="createForm.desc"
-            type="textarea"
-            placeholder="角色描述"
-          />
+        <el-form-item label="排序" prop="order">
+          <el-input-number v-model="createForm.order" :min="0" :max="1000" />
         </el-form-item>
         <el-form-item label="是否启用" prop="status">
           <el-switch
@@ -118,63 +109,22 @@
           >
           </el-switch>
         </el-form-item>
+        <el-form-item label="规格值" prop="default">
+          <TagInput v-model:tagval="createForm.default" />
+        </el-form-item>
       </el-form>
-    </FormDrawer>
-    <FormDrawer
-      title="配置权限"
-      ref="setRuleDrawerRef"
-      @submit="handleSetRuleSubmit"
-    >
-      <el-tree-v2
-        ref="elTreeRef"
-        :data="rulesData"
-        :props="{ label: 'name', children: 'child' }"
-        :check-strictly="checkStrictly"
-        class="custom-tree-node"
-        v-loading="loading"
-        node-key="id"
-        @check="handleTreeCheck"
-        :height="$windowHeight - 170"
-        show-checkbox
-        :default-expanded-keys="defaultExpandedKeys"
-      >
-        <template #default="{ node, data }">
-          <div class="flex items-center w-[100%]">
-            <el-tag size="small" :type="data.menu ? '' : 'info'">
-              {{ data.menu ? "菜单" : "权限" }}</el-tag
-            >
-            <el-icon v-if="data.icon" :size="16" class="ml-2">
-              <component :is="data.icon"></component>
-            </el-icon>
-            <span class="ml-2">{{ data.name }}</span>
-          </div>
-        </template>
-      </el-tree-v2>
     </FormDrawer>
   </div>
 </template>
 
 <script setup>
-import { nextTick, reactive, ref } from "vue";
-import roleApi from "@/api/role";
-import ruleApi from "@/api/rule";
-import { notification } from "@/utils/utils";
+import { reactive, ref } from "vue";
+import skusApi from "@/api/skus";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ListHeader from "@/components/ListHeader.vue";
+import TagInput from "@/components/TagInput.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-const setRuleDrawerRef = ref(null);
-const elTreeRef = ref(null);
-// 默认父子节点关联
-const checkStrictly = ref(false);
-const defaultExpandedKeys = ref([]);
-const rulesData = ref([]);
-const roleInfo = reactive({
-  id: 0,
-  rule_ids: [],
-});
 
-// 当前用户拥有的权限id
-const roleIds = ref([]);
 const {
   getData,
   handleDelete,
@@ -185,17 +135,21 @@ const {
   pager,
   columns,
 } = useTableInit({
-  queryApi: roleApi.getRoles,
-  deleteApi: roleApi.deleteRole,
-  updateStateApi: roleApi.updateRoleStatus,
+  queryApi: skusApi.getSkus,
+  deleteApi: skusApi.deleteSkus,
+  updateStateApi: skusApi.updateSkusStatus,
   columns: [
     {
-      label: "角色名称",
+      label: "规格名称",
       prop: "name",
     },
     {
-      label: "角色描述",
-      prop: "desc",
+      label: "规格值",
+      prop: "default",
+    },
+    {
+      label: "排序",
+      prop: "order",
     },
   ],
   onSuccessInit: (res) => {
@@ -217,72 +171,40 @@ const {
   handleSubmit,
   rules,
 } = useInitForm({
-  text: "角色",
+  text: "规格",
   createForm: {
     editId: null,
     name: "",
-    desc: "",
+    default: "",
+    order: 50,
     status: 1,
   },
   rules: {
     name: [
       {
         required: true,
-        message: "角色名称不能为空",
+        message: "规格名称不能为空",
         trigger: "blur",
       },
     ],
-    desc: [
+    default: [
       {
         required: true,
-        message: "描述内容不能为空",
+        message: "规格值不能为空",
         trigger: "blur",
       },
     ],
   },
-  createApi: roleApi.setRole,
-  editApi: roleApi.updateRole,
+  createApi: skusApi.setSkus,
+  editApi: skusApi.updateSkus,
   getData,
   pager,
 });
 
-const handleSetRule = async ({ id, ...data }) => {
-  roleInfo.id = id;
-  checkStrictly.value = true;
-  const res = await ruleApi.getRules();
-  rulesData.value = res.list;
-  defaultExpandedKeys.value = res.list.map((item) => item.id);
-  setRuleDrawerRef.value.open();
-  //   获取当前角色拥有的权限id
-  roleIds.value = data.rules.map((item) => item.id);
-  nextTick(() => {
-    elTreeRef.value.setCheckedKeys(roleIds.value);
-    checkStrictly.value = false;
-  });
-};
 
-const handleTreeCheck = (...e) => {
-  const { checkedKeys, halfCheckedKeys } = e[1];
-  roleInfo.rule_ids = [...checkedKeys, ...halfCheckedKeys];
-};
-
-const handleSetRuleSubmit = async () => {
-  setRuleDrawerRef.value.showLoading();
-  try {
-    const res = await roleApi.setRoleRules(roleInfo);
-    if (res) {
-      getData();
-      notification(`设置权限成功`);
-    } else {
-      notification(`设置权限失败`, "error");
-    }
-    setRuleDrawerRef.value.hideLoading();
-    setRuleDrawerRef.value.close();
-  } catch (error) {
-    console.log(error);
-    setRuleDrawerRef.value.hideLoading();
-    notification(`设置权限失败`, "error");
-  }
+const multiSelectionIds = ref([])
+const handleSelectionChange = (e) => {
+    multiSelectionIds.value = e.map((item) => item.id)
 };
 </script>
 
