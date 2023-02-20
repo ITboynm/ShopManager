@@ -78,7 +78,7 @@
               title="是否删除该优惠券?"
               confirm-button-text="确认"
               cancel-button-text="取消"
-              width="158px"
+              width="166px"
               @confirm="handleDelete(row.id)"
             >
               <template #reference>
