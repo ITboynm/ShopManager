@@ -41,7 +41,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="优惠" align="center">
+        <el-table-column label="优惠"  >
           <template #default="{ row }">
             <div class="flex">
               <el-tag type="warning" effect="dark" class="br">
