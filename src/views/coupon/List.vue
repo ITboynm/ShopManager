@@ -41,6 +41,18 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="优惠" align="center">
+          <template #default="{ row }">
+            <div class="flex">
+              <el-tag type="warning" effect="dark" class="br">
+                {{ !row.type ? "满减" : "折扣" }}
+              </el-tag>
+              <el-tag class="bl">
+                {{ !row.type ? `￥${row.value}` : ` ${row.value}折` }}
+              </el-tag>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           v-for="(item, index) in columns"
           :key="index"
@@ -195,16 +207,6 @@ const {
   updateStateApi: couponApi.updateCouponStatus,
   columns: [
     {
-      label: "优惠",
-      prop: "type",
-      formatter: (row) => {
-        let text = !row.type
-          ? `满减 - ￥${row.value}`
-          : `折扣 - ${row.value}折`;
-        return text;
-      },
-    },
-    {
       label: "发放数量",
       align: "center",
       prop: "total",
@@ -341,7 +343,14 @@ const timerange = computed({
   @apply flex items-center justify-center mt-5 absolute bottom-0 left-0 right-0 py-2 w-[100%];
   height: 60px;
 }
-
+.bl{
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.br{
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
 .startActive {
   @apply border-green-200 bg-green-50 text-green-400;
 }
