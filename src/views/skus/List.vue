@@ -19,6 +19,7 @@
 
       <el-table
         :data="tableData"
+        ref="multipleTableRef"
         stripe
         style="width: 100%"
         v-loading="loading"
@@ -127,6 +128,9 @@ import { useTableInit, useInitForm } from "@/composables/useCommon";
 
 const {
   getData,
+  multipleTableRef,
+  multiSelectionIds,
+  handleSelectionChange,
   handleDelete,
   changeCurrent,
   loading,
@@ -200,12 +204,6 @@ const {
   getData,
   pager,
 });
-
-
-const multiSelectionIds = ref([])
-const handleSelectionChange = (e) => {
-    multiSelectionIds.value = e.map((item) => item.id)
-};
 </script>
 
 <style lang="scss" scoped>

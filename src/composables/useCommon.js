@@ -8,10 +8,11 @@ import { notification } from "@/utils/utils";
 
 // 初始化搜索、分页、删除、修改状态
 export function useTableInit(options = {}) {
-  const queryRules = options.queryRules || []
-  const columns = options.columns || []
+  const queryRules = options.queryRules || [];
+  const columns = options.columns || [];
   // 搜索表单组件
   const queryformRef = ref(null);
+  const multipleTableRef = ref(null);
   const queryform = reactive(options.queryform || {});
 
   // 分页参数
@@ -60,7 +61,15 @@ export function useTableInit(options = {}) {
     queryformRef.value.resetFields();
     getData();
   };
-
+  // 清除多选状态
+  const resetMultipleTable = () => {
+    if (multipleTableRef.value) multipleTableRef.value.clearSelection();
+  };
+  // 多选方法以及最终返回的数据
+  const multiSelectionIds = ref([]);
+  const handleSelectionChange = (e) => {
+    multiSelectionIds.value = e.map((item) => item.id);
+  };
   // 分页操作
   const changeCurrent = async (cur) => {
     pager.page = cur;
@@ -77,9 +86,11 @@ export function useTableInit(options = {}) {
       } else {
         notification("删除失败", "error");
       }
+      resetMultipleTable();
       loading.value = false;
     } catch (error) {
       notification("删除失败", "error");
+      resetMultipleTable();
       loading.value = false;
     }
   };
@@ -111,11 +122,14 @@ export function useTableInit(options = {}) {
     changeCurrent,
     handleDelete,
     handleStatusChange,
+    handleSelectionChange,
+    multiSelectionIds,
     queryRules,
     columns,
     loading,
     queryform,
     queryformRef,
+    multipleTableRef,
     tableData,
     pager,
   };
@@ -123,7 +137,7 @@ export function useTableInit(options = {}) {
 
 // 初始化新增与修改
 export function useInitForm(options = {}) {
-  const rules = options.rules || []
+  const rules = options.rules || [];
   const formDrawerRef = ref(null);
   const DrawerRef = ref(null);
   const isEdit = ref(false);
@@ -139,7 +153,7 @@ export function useInitForm(options = {}) {
   // 新增
   const handleCreate = async () => {
     resetForm();
-    reset()
+    reset();
     formDrawerRef.value.open();
   };
   // 编辑
@@ -201,4 +215,3 @@ export function useInitForm(options = {}) {
     handleSubmit,
   };
 }
-
