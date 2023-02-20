@@ -52,20 +52,26 @@ const hideFullLoading = () => {
 
 // 树形结构遍历加属性
 const recursionTree = (options) => {
-  options.arr.forEach(item => {
-    item[options.key] = options.value
-    if (item.child && item.child.length > 0) recursionTree({
-      arr: item.child,
-      key: options.key,
-      value: options.value
-    })
-  })
-}
+  options.arr.forEach((item) => {
+    item[options.key] = options.value;
+    if (item.child && item.child.length > 0)
+      recursionTree({
+        arr: item.child,
+        key: options.key,
+        value: options.value,
+      });
+  });
+};
+// 转换成时间戳
+const toTime = (data = "") => {
+  return data ? new Date(data).getTime() : new Date().getTime();
+};
 export {
   notification,
   showModal,
   showPromptModal,
   showFullLoading,
   hideFullLoading,
-  recursionTree
+  recursionTree,
+  toTime,
 };

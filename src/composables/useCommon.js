@@ -148,12 +148,21 @@ export function useInitForm(options = {}) {
     if (DrawerRef.value) DrawerRef.value.resetFields();
   };
 
+  const resetPicker = () => {
+    if (options.picker) {
+      createForm[options.picker.start] = "";
+      createForm[options.picker.end] = "";
+    }
+  };
+
   const createForm = reactive(options.createForm);
 
   // 新增
   const handleCreate = async () => {
+    isEdit.value = false;
     resetForm();
     reset();
+    resetPicker();
     formDrawerRef.value.open();
   };
   // 编辑
@@ -180,14 +189,20 @@ export function useInitForm(options = {}) {
       if (!valid) return false;
       formDrawerRef.value.showLoading();
       let text = "操作";
+      let subBody = {};
+      if (options.beforeSubmit && typeof options.beforeSubmit == "function") {
+        subBody = options.beforeSubmit({ ...createForm });
+      } else {
+        subBody = createForm;
+      }
       try {
         let res;
+        let { editId, ...params } = subBody;
         if (!isEdit.value) {
-          res = await options.createApi(createForm);
+          res = await options.createApi(params);
           if (res) text = "新增";
           options.pager.page = 1;
         } else {
-          let { editId, ...params } = createForm;
           res = await options.editApi(editId, params);
           if (res) text = "编辑";
         }
