@@ -1,43 +1,31 @@
 <template>
   <div id="">
     <!-- 搜索 -->
-    <el-form
-      :model="queryform"
-      ref="queryformRef"
-      :rules="rules"
-      label-width="80px"
-      class="queryform"
-      inline
-      size="normal"
+    <Search
+      v-model="queryform"
+      :rules="queryRules"
+      @search="handleQuery"
+      @reset="getData(pager)"
     >
-      <el-form-item label="" prop="keyword">
+      <SearchItem :prop="'keyword'">
         <el-input
           v-model="queryform.keyword"
-          class="w-[200px]"
           size="small"
           placeholder="管理员昵称"
         ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="handleQuery"
-          icon="Search"
-          size="small"
-          >搜索</el-button
-        >
-        <el-button icon="RefreshLeft" size="small" @click="handleQueryRest"
-          >重置</el-button
-        >
-      </el-form-item>
-    </el-form>
+      </SearchItem>
+    </Search>
     <el-card
       shadow="never"
       class="border-0 relative"
       :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
     >
       <!-- 新增和刷新 -->
-      <ListHeader layout="create,refresh" @create="handleCreate" @refresh="getData(pager)"></ListHeader>
+      <ListHeader
+        layout="create,refresh"
+        @create="handleCreate"
+        @refresh="getData(pager)"
+      ></ListHeader>
 
       <el-table
         :data="tableData"
@@ -179,6 +167,8 @@ import adminApi from "@/api/admin";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
 import ListHeader from "@/components/ListHeader.vue";
+import Search from "@/components/Search.vue";
+import SearchItem from "@/components/SearchItem.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
 
 const selectData = ref([]);
@@ -277,17 +267,6 @@ const {
 </script>
 
 <style scoped lang="scss">
-.queryform {
-  margin-bottom: 10px;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #fff;
-  border-radius: 4px;
-  border: 1px solid #e4e7ed;
-  .el-form-item {
-    margin-bottom: 0;
-  }
-}
 .pagination {
   @apply flex items-center justify-center mt-5 absolute bottom-0 left-0 right-0 py-2 w-[100%] z-50;
   height: 60px;

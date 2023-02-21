@@ -11,10 +11,11 @@ export function useTableInit(options = {}) {
   const queryRules = options.queryRules || [];
   const columns = options.columns || [];
   // 搜索表单组件
-  const queryformRef = ref(null);
-  const multipleTableRef = ref(null);
+  const queryformRef = options.queryformRef || ref(null);
+  const multipleTableRef = options.multipleTableRef || ref(null);
   const queryform = reactive(options.queryform || {});
-
+  // 全局搜索状态
+  let searchStatus = 0;
   // 分页参数
   const pager = reactive({
     page: 1,
@@ -36,8 +37,18 @@ export function useTableInit(options = {}) {
         tableData.value = res.list;
       }
       loading.value = false;
+      if (searchStatus) {
+        setTimeout(() => {
+          searchStatus = 0;
+        }, 0);
+      }
     } catch (error) {
       loading.value = false;
+      if (searchStatus) {
+        setTimeout(() => {
+          searchStatus = 0;
+        }, 0);
+      }
       console.log(error);
     }
   };
@@ -46,15 +57,31 @@ export function useTableInit(options = {}) {
    * 查询
    *
    * */
-  const handleQuery = () => {
-    queryformRef.value.validate(async (valid, fields) => {
-      if (!valid) return false;
-      Object.values(toRaw(queryform)).every(function (item) {
-        return item || item == 0 || item == false;
-      })
-        ? getData(pager, toRaw(queryform))
-        : getData();
-    });
+  const getParams = (config = pager) => {
+    const querParams = {};
+    for (const key in toRaw(queryform)) {
+      let val = toRaw(queryform)[key];
+      if (val || val == 0 || val == false) querParams[key] = val;
+    }
+    Object.keys(querParams).length
+      ? getData(config, querParams)
+      : getData(config);
+
+    return querParams;
+  };
+
+  const handleQuery = async (isOk) => {
+    searchStatus = 1;
+    if (isOk() != "undefined") {
+      const res = await isOk();
+      if (!res) return;
+      pager.page = 1;
+      getParams();
+    } else {
+      queryformRef.value.validate(async (valid, fields) => {
+        getParams();
+      });
+    }
   };
   // 重置
   const handleQueryRest = () => {
@@ -71,9 +98,15 @@ export function useTableInit(options = {}) {
     multiSelectionIds.value = e.map((item) => item.id);
   };
   // 分页操作
-  const changeCurrent = async (cur) => {
+  const changeCurrent = (cur) => {
+    if (searchStatus) {
+      setTimeout(() => {
+        searchStatus = 0;
+      }, 0);
+      return;
+    }
     pager.page = cur;
-    await getData(toRaw(pager));
+    getParams();
   };
   // 删除
   const handleDelete = async (id) => {

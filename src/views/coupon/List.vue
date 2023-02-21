@@ -92,7 +92,7 @@
               title="是否让该优惠券失效?"
               confirm-button-text="失效"
               cancel-button-text="取消"
-              width="158px"
+              width="180px"
               @confirm="handleStatusChange(0, row)"
             >
               <template #reference>
