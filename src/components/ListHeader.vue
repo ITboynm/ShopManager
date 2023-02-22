@@ -23,6 +23,7 @@
           >
         </template>
       </el-popconfirm>
+      <slot></slot>
     </div>
     <el-tooltip
       effect="dark"

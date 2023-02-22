@@ -108,8 +108,10 @@ export function useTableInit(options = {}) {
     pager.page = cur;
     getParams();
   };
-  // 删除
+  // 删除/批量删除
   const handleDelete = async (id) => {
+    if ((id instanceof Array) && !id.length)
+      return notification(`请选择商品`, "info");
     loading.value = true;
     try {
       const res = await options.deleteApi(id);
@@ -129,19 +131,38 @@ export function useTableInit(options = {}) {
   };
   // 修改状态
   const handleStatusChange = async (status, row) => {
-    row.statusLoading = true;
-    try {
-      const res = await options.updateStateApi(row.id, { status });
-      if (res) {
-        notification("状态修改成功");
-        row.status = status;
-      } else {
-        notification("状态修改失败", "error");
+    if (row instanceof Array) {
+      if (!row.length) return notification(`请选择商品`, "info");
+      let text;
+      status ? (text = "上架") : (text = "下架");
+      try {
+        const res = await options.updateStateApi(row, status);
+        if (res) {
+          notification(`${text}成功`);
+          getData();
+        } else {
+          notification(`${text}失败`, "error");
+        }
+      } catch (error) {
+        console.table(error);
+        notification(`${text}失败`, "error");
       }
-      row.statusLoading = false;
-    } catch (error) {
-      notification("状态修改失败", "error");
-      row.statusLoading = false;
+    } else {
+      row.statusLoading = true;
+      try {
+        const res = await options.updateStateApi(row.id, { status });
+        if (res) {
+          notification("状态修改成功");
+          row.status = status;
+        } else {
+          notification("状态修改失败", "error");
+        }
+        row.statusLoading = false;
+      } catch (error) {
+        console.table(error);
+        notification("状态修改失败", "error");
+        row.statusLoading = false;
+      }
     }
   };
   onMounted(() => {

@@ -20,7 +20,8 @@ export default {
     });
   },
   //  批量上架/下架商品
-  changeGoodsStatus(id, params) {
+  changeGoodsStatus(ids, status) {
+    let params = { ids, status };
     return request({
       url: `/goods/changestatus`,
       method: "post",
@@ -92,7 +93,7 @@ export default {
   readGoods(id, params) {
     return request({
       url: `/goods/read/${id}`,
-      method: "post",
+      method: "get",
       data: params,
       // mock: false
     });
@@ -179,3 +180,5 @@ export default {
     });
   },
 };
+
+

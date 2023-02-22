@@ -1,16 +1,40 @@
 <template>
   <div>
-    <div class="choose-image-btn" @click="open">
-      <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)"
-        ><Plus
-      /></el-icon>
-      <el-image
-        v-else
-        :src="avatar"
-        alt=""
-        :fit="cover"
-        class="h-[100%] w-[100%]"
-      />
+    <div class="flex flex-wrap w-[100%]">
+      <div
+        class="choose-image-btn"
+        @click="open"
+        v-if="!(avatar instanceof Array)"
+      >
+        <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)"
+          ><Plus
+        /></el-icon>
+        <el-image
+          v-else
+          :src="avatar"
+          alt=""
+          :fit="cover"
+          class="h-[100%] w-[100%]"
+        />
+      </div>
+      <div v-else class="flex flex-wrap">
+        <div class="choose-image-btn order-2" @click="open">
+          <el-icon
+            v-if="!avatar || avatar instanceof Array"
+            :size="25"
+            color="rgba(107, 114, 128, 0.5)"
+            ><Plus
+          /></el-icon>
+        </div>
+        <el-image
+          v-for="(imgUrl, index) in avatar"
+          :key="index"
+          :src="imgUrl"
+          alt=""
+          :fit="cover"
+          class="choose-image-btn mr-1 mb-1"
+        />
+      </div>
     </div>
     <el-dialog
       title="选择图片"
@@ -21,7 +45,7 @@
     >
       <el-container class="bg-white rounded container" style="height: 70vh">
         <el-container>
-          <image-aside ref="imageAsideRef"  :isChoose="true" />
+          <image-aside ref="imageAsideRef" :isChoose="true" />
           <image-main
             ref="imageMainRef"
             :isChoose="true"
@@ -44,23 +68,32 @@ import ImageMain from "@/components/ImageMain.vue";
 const imageMainRef = ref(null);
 const imageAsideRef = ref(null);
 const dialogVisible = ref(false);
-let imageURL = "";
-const handleChoose = (imageUrl) => {
-  if (imageUrl) imageURL = imageUrl;
-};
 const props = defineProps({
   avatar: [String, Array],
 });
+let imageURL = null;
+const handleChoose = (Url) => {
+  if (!Url) {
+    imageURL.pop();
+  } else if (typeof props.avatar == "String" || !props.avatar) {
+    imageURL = Url;
+  } else if (props.avatar instanceof Array) {
+    imageURL = [...props.avatar];
+    imageURL.push(Url);
+  }
+};
+
 const emits = defineEmits(["update:avatar"]);
 
 const open = () => {
   dialogVisible.value = true;
-  imageAsideRef.value.initActiveID()
+  imageAsideRef.value.initActiveID();
 };
 
 const close = () => {
   dialogVisible.value = false;
   imageMainRef.value.resetChecked();
+  imageURL = null;
 };
 const submit = () => {
   emits("update:avatar", imageURL);
