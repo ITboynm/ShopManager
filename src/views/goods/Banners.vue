@@ -10,6 +10,7 @@
     <el-form :model="bannerForm" ref="bannerFormRef" label-width="80px">
       <el-form-item label="轮播图">
         <ChooseImage
+          :limit="6"
           ref="chosseImageRef"
           v-model:avatar="bannerForm.banners"
         ></ChooseImage>
@@ -32,11 +33,24 @@ const bannerFormRef = ref(null);
 const bannerForm = reactive({
   banners: [],
 });
-
-const onBannerSubmit = () => {
-    console.log(bannerForm.banners)
-};
 const goodsId = ref(0);
+const onBannerSubmit = async () => {
+  try {
+    const res = await goodsApi.setGoodsBanners(
+      goodsId.value,
+      bannerForm.banners
+    );
+    if (res.length) {
+      dialogVisible.value = false;
+      return notification("设置轮播图成功");
+    }
+    notification("设置轮播图失败", "error");
+  } catch (error) {
+    concole.table(error);
+    notification("设置轮播图失败", "error");
+  }
+};
+
 const open = (row) => {
   dialogVisible.value = true;
   nextTick(async () => {

@@ -98,10 +98,14 @@ const {
     config: { globalProperties: ctx },
   },
 } = getCurrentInstance();
-defineProps({
+const props = defineProps({
   isChoose: {
     type: Boolean,
     default: false,
+  },
+  limit: {
+    type: Number,
+    default: 1,
   },
 });
 
@@ -188,11 +192,15 @@ const checkedImage = computed(() =>
   imageList.value.filter((item) => item.checked)
 );
 const handleChooseChange = (item) => {
-  if (item.checked && checkedImage.value.length > 1) {
+  if (item.checked && checkedImage.value.length > props.limit) {
     item.checked = false;
-    return notification("至多选中一张图片", "info");
+    return notification(`至多选中${props.limit}张图片`, "info");
   }
-  emits("choose", checkedImage.value[0]?.url);
+  let data =
+    props.limit > 1
+      ? checkedImage.value.map((item) => item?.url)
+      : checkedImage.value[0]?.url;
+  emits("choose", data);
 };
 
 const resetChecked = () => {

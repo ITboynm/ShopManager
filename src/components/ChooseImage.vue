@@ -18,7 +18,7 @@
         />
       </div>
       <div v-else class="flex flex-wrap">
-        <div class="choose-image-btn order-2" @click="open">
+        <div class="choose-image-btn mr-1 order-2" @click="open">
           <el-icon
             v-if="!avatar || avatar instanceof Array"
             :size="25"
@@ -26,14 +26,17 @@
             ><Plus
           /></el-icon>
         </div>
-        <el-image
-          v-for="(imgUrl, index) in avatar"
-          :key="index"
-          :src="imgUrl"
-          alt=""
-          :fit="cover"
-          class="choose-image-btn mr-1 mb-1"
-        />
+        <div v-for="(imgUrl, index) in avatar" :key="index" class="imageDelBox">
+          <div class="imageDel" @click="delImages(index)">
+            <el-icon color="#f56c6c" size="35"><Delete /></el-icon>
+          </div>
+          <el-image
+            :src="imgUrl"
+            alt=""
+            :fit="cover"
+            class="choose-image-btn mr-1 mb-1"
+          />
+        </div>
       </div>
     </div>
     <el-dialog
@@ -50,6 +53,7 @@
             ref="imageMainRef"
             :isChoose="true"
             @choose="handleChoose"
+            :limit="limit"
           />
         </el-container>
       </el-container>
@@ -62,42 +66,61 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import ImageAside from "@/components/ImageAside.vue";
 import ImageMain from "@/components/ImageMain.vue";
 const imageMainRef = ref(null);
 const imageAsideRef = ref(null);
 const dialogVisible = ref(false);
+let isChecked = false;
 const props = defineProps({
   avatar: [String, Array],
+  limit: {
+    type: Number,
+    default: 1,
+  },
 });
-let imageURL = null;
+let imageURL = ref(null);
+let iamgeArray = ref([]);
+watch(
+  () => props.avatar,
+  (newVal, oldVal) => {
+    imageURL.value = typeof newVal == "string" ? newVal : [...newVal];
+  }
+);
+
 const handleChoose = (Url) => {
-  if (!Url) {
-    imageURL.pop();
-  } else if (typeof props.avatar == "String" || !props.avatar) {
-    imageURL = Url;
-  } else if (props.avatar instanceof Array) {
-    imageURL = [...props.avatar];
-    imageURL.push(Url);
+  if (isChecked) return;
+  if ((Url && typeof props.avatar == "string") || !props.avatar) {
+    imageURL.value = Url;
+  } else if (Url && props.avatar instanceof Array) {
+    iamgeArray.value = Url;
   }
 };
 
 const emits = defineEmits(["update:avatar"]);
 
 const open = () => {
+  isChecked = false;
   dialogVisible.value = true;
-  imageAsideRef.value.initActiveID();
+  imageAsideRef.value?.initActiveID();
 };
 
 const close = () => {
+  isChecked = true;
   dialogVisible.value = false;
   imageMainRef.value.resetChecked();
-  imageURL = null;
+  imageURL.value = null;
 };
 const submit = () => {
-  emits("update:avatar", imageURL);
+  iamgeArray.value.length && imageURL.value.push(...iamgeArray.value);
+  emits("update:avatar", imageURL.value);
   close();
+};
+
+const delImages = (index) => {
+  imageURL.value.splice(index, 1);
+  emits("update:avatar", imageURL.value);
 };
 </script>
 
@@ -110,7 +133,27 @@ const submit = () => {
     width: 100%;
   }
 }
-
+.imageDelBox {
+  position: relative !important;
+  .imageDel {
+    position: absolute !important;
+    opacity: 0;
+    top: 0;
+    bottom: 0.25rem;
+    left: 0;
+    right: 0.25rem;
+    z-index: 99;
+    transition: all 0.4s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(0, 0, 0);
+  }
+  &:hover .imageDel {
+    opacity: 0.6;
+  }
+}
 .chooseImagedDialogClass {
   .el-dialog__body {
     padding: 0 !important;
