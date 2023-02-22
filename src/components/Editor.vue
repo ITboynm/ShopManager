@@ -1,10 +1,12 @@
 <template>
   <editor v-model="content" tag-name="div" :init="init" />
+  <ChooseImage ref="ChooseImageRef" :preview="true" :limitSize="9" :checkMore="true" v-model="imgUrlList"></ChooseImage>
 </template>
 <script setup>
 import tinymce from "tinymce/tinymce";
 import Editor from "@tinymce/tinymce-vue";
-import { ref, watch } from "vue";
+import ChooseImage from "@/components/ChooseImage.vue";
+import { ref, watch, getCurrentInstance } from "vue";
 import "tinymce/themes/silver/theme"; // 引用主题文件
 import "tinymce/icons/default"; // 引用图标文件
 import "tinymce/models/dom";
@@ -43,7 +45,14 @@ import "tinymce/plugins/wordcount"; // 字数统计插件
 const props = defineProps({
   modelValue: String,
 });
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const emit = defineEmits(["update:modelValue"]);
+const ChooseImageRef = ref(null)
+const imgUrlList = ref([])
 // 配置
 const init = {
   language_url: "/tinymce/langs/zh-Hans.js", // 中文语言包路径
@@ -52,8 +61,8 @@ const init = {
   content_css: "/tinymce/skins/content/default/content.min.css",
   menubar: false, // 隐藏菜单栏
   autoresize_bottom_margin: 50,
-  max_height: 500,
-  min_height: 450,
+  max_height: ctx.$windowHeight - ctx.$windowHeight * 0.25,
+  min_height: ctx.$windowHeight - ctx.$windowHeight * 0.28,
   // height: 320,
   toolbar_mode: "none",
   plugins:
@@ -74,7 +83,12 @@ const init = {
       tooltip: "插入图片",
       icon: "image",
       onAction() {
-        console.log("插入图片");
+        ChooseImageRef.value.open((data) => {
+          data.forEach(item => {
+            editor.insertContent(`<img src='${item}' style='width:100%'/>`)
+          })
+        })
+
       },
     });
   },

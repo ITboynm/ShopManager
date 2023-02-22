@@ -1,63 +1,34 @@
 <template>
   <div>
-    <div class="flex flex-wrap w-[100%]">
-      <div
-        class="choose-image-btn"
-        @click="open"
-        v-if="!(avatar instanceof Array)"
-      >
-        <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)"
-          ><Plus
-        /></el-icon>
-        <el-image
-          v-else
-          :src="avatar"
-          alt=""
-          :fit="cover"
-          class="h-[100%] w-[100%]"
-        />
+    <div class="flex flex-wrap w-[100%]" v-if="!preview">
+      <div class="choose-image-btn" @click="open" v-if="!(avatar instanceof Array)">
+        <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)">
+          <Plus />
+        </el-icon>
+        <el-image v-else :src="avatar" alt="" :fit="cover" class="h-[100%] w-[100%]" />
       </div>
       <div v-else class="flex flex-wrap">
         <div class="choose-image-btn mr-1 order-2" @click="open">
-          <el-icon
-            v-if="!avatar || avatar instanceof Array"
-            :size="25"
-            color="rgba(107, 114, 128, 0.5)"
-            ><Plus
-          /></el-icon>
+          <el-icon v-if="!avatar || avatar instanceof Array" :size="25" color="rgba(107, 114, 128, 0.5)">
+            <Plus />
+          </el-icon>
         </div>
         <div v-for="(imgUrl, index) in avatar" :key="index" class="imageDelBox">
           <div class="imageDel" @click="delImages(index)">
-            <el-icon color="#f56c6c" size="35"><Delete /></el-icon>
+            <el-icon color="#f56c6c" size="35">
+              <Delete />
+            </el-icon>
           </div>
-          <el-image
-            :src="imgUrl"
-            alt=""
-            :lazy="true"
-            :fit="cover"
-            class="choose-image-btn mr-1 mb-1"
-          />
+          <el-image :src="imgUrl" alt="" :lazy="true" :fit="cover" class="choose-image-btn mr-1 mb-1" />
         </div>
       </div>
     </div>
-    <el-dialog
-      title="选择图片"
-      v-model="dialogVisible"
-      class="chooseImagedDialogClass"
-      width="80%"
-      top="5vh"
-    >
+    <el-dialog title="选择图片" v-model="dialogVisible" class="chooseImagedDialogClass" width="80%" top="5vh">
       <el-container class="bg-white rounded container" style="height: 70vh">
         <el-container>
           <image-aside ref="imageAsideRef" :isChoose="true" />
-          <image-main
-            ref="imageMainRef"
-            :isChoose="true"
-            @choose="handleChoose"
-            :limit="limitSize"
-            :limitMax="limit"
-            :checkMore="checkMore"
-          />
+          <image-main ref="imageMainRef" :isChoose="true" @choose="handleChoose" :limit="limitMoreSize" :limitMax="limit"
+            :checkMore="checkMore" />
         </el-container>
       </el-container>
       <template #footer>
@@ -80,18 +51,27 @@ const props = defineProps({
   avatar: [String, Array],
   limit: {
     type: Number,
+    default: null,
+  },
+  limitSize: {
+    type: Number,
     default: 1,
   },
   checkMore: {
     type: Boolean,
     default: false,
   },
+  preview: {
+    type: Boolean,
+    default: false,
+  }
 });
 let imageURL = ref(null);
-let iamgeArray = ref([]);
-const limitSize = computed(() => {
+let imageArray = ref([]);
+const callbackFun = ref(null)
+const limitMoreSize = computed(() => {
   if (props.avatar instanceof Array) return props.limit - props.avatar.length;
-  return 1;
+  return props.limitSize;
 });
 watch(
   () => props.avatar,
@@ -101,18 +81,18 @@ watch(
 );
 
 const handleChoose = (Url) => {
-  console.log(Url);
   if (isChecked) return;
   if ((Url && typeof props.avatar == "string") || !props.avatar) {
     imageURL.value = Url;
   } else if (Url && props.avatar instanceof Array) {
-    iamgeArray.value = Url;
+    imageArray.value = Url;
   }
 };
 
 const emits = defineEmits(["update:avatar"]);
 
-const open = () => {
+const open = (callback = null) => {
+  callbackFun.value = callback
   isChecked = false;
   dialogVisible.value = true;
   imageAsideRef.value?.initActiveID();
@@ -126,11 +106,15 @@ const close = () => {
 };
 
 const submit = () => {
-  if (iamgeArray.value.length) {
-    imageURL.value.push(...iamgeArray.value);
-    iamgeArray.value = [];
+  if (imageArray.value.length) {
+    imageURL.value.push(...imageArray.value);
+    imageArray.value = [];
   }
-  emits("update:avatar", imageURL.value);
+  if (props.preview && typeof callbackFun.value == 'function') {
+    callbackFun.value(imageURL.value)
+  } else {
+    emits("update:avatar", imageURL.value);
+  }
   close();
 };
 
@@ -138,19 +122,26 @@ const delImages = (index) => {
   imageURL.value.splice(index, 1);
   emits("update:avatar", imageURL.value);
 };
+
+defineExpose({
+  open
+})
 </script>
 
 <style lang="scss">
 .choose-image-btn {
-  @apply w-[100px] h-[100px] rounded  flex justify-center items-center cursor-pointer hover:(bg-gray-100) overflow-hidden;
+  @apply w-[100px] h-[100px] rounded flex justify-center items-center cursor-pointer hover: (bg-gray-100) overflow-hidden;
   border: 0.5px solid rgba(107, 114, 128, 0.3);
+
   img {
     height: 100%;
     width: 100%;
   }
 }
+
 .imageDelBox {
   position: relative !important;
+
   .imageDel {
     position: absolute !important;
     opacity: 0;
@@ -166,10 +157,12 @@ const delImages = (index) => {
     cursor: pointer;
     background-color: rgb(0, 0, 0);
   }
+
   &:hover .imageDel {
     opacity: 0.6;
   }
 }
+
 .chooseImagedDialogClass {
   .el-dialog__body {
     padding: 0 !important;

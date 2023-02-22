@@ -34,7 +34,7 @@ const open = async (row) => {
     row.contentStatus = false;
     formDrawerRef.value.open();
   } catch (error) {
-    concole.table(error);
+    console.table(error);
     notification("获取商品详情数据失败", "error");
     row.contentStatus = false;
   }
