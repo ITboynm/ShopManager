@@ -178,10 +178,17 @@
                   :type="row.goods_banner.length ? 'primary' : 'danger'"
                   text
                   icon="Picture"
+                  :loading="row.bannerStatus"
                   @click="setGoodsBanners(row)"
                   >设置轮播图</el-button
                 >
-                <el-button size="small" type="primary" text icon="Tickets"
+                <el-button
+                  size="small"
+                  :type="row.content ? 'primary' : 'danger'"
+                  text
+                  icon="Tickets"
+                  :loading="row.contentStatus"
+                  @click="setGoodsContent(row)"
                   >商品详情</el-button
                 >
 
@@ -215,6 +222,7 @@
         </div>
       </el-card>
       <Banners @reloadData="getData(pager)" ref="bannersForm"></Banners>
+      <Content @reloadData="getData(pager)" ref="contentForm"></Content>
     </div>
     <FormDrawer
       :title="isEdit ? '编辑' : '新增'"
@@ -328,8 +336,10 @@ import SearchItem from "@/components/SearchItem.vue";
 import { tabbars, unitList } from "@/views/goods/parameter";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
 import Banners from "@/views/goods/Banners.vue";
+import Content from "@/views/goods/Content.vue";
 const selectData = ref([]);
 const bannersForm = ref(null);
+const contentForm = ref(null);
 const upAndDown = computed(() => {
   let data = [];
   switch (queryform.tab) {
@@ -388,7 +398,11 @@ const {
   onSuccessInit: (res) => {
     pager.total = res.totalCount;
     category_list.value = res.cates;
-    tableData.value = res.list;
+    tableData.value = res.list.map((item) => {
+      item.bannerStatus = false;
+      item.contentStatus = false;
+      return item;
+    });
   },
 });
 
@@ -425,6 +439,7 @@ const {
 });
 
 const setGoodsBanners = (row) => bannersForm.value.open(row);
+const setGoodsContent = (row) => contentForm.value.open(row);
 </script>
 
 <style scoped lang="scss">

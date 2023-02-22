@@ -48,7 +48,7 @@ const onBannerSubmit = async () => {
     if (res.length) {
       handleClose();
       notification("设置轮播图成功");
-      emits('reloadData')
+      emits("reloadData");
     } else {
       notification("设置轮播图失败", "error");
     }
@@ -60,26 +60,25 @@ const onBannerSubmit = async () => {
   }
 };
 
-const open = (row) => {
-  dialogVisible.value = true;
-  nextTick(async () => {
-    notification("获取轮播图数据中。。。", "info");
-    try {
-      goodsId.value = row.id;
-      const res = await goodsApi.readGoods(goodsId.value);
-      bannerForm.banners = res.goodsBanner.map((item) => item.url);
-      notification("获取轮播图数据完成");
-    } catch (error) {
-      concole.table(error);
-      notification("获取轮播图数据失败", "error");
-    }
-  });
+const open = async (row) => {
+  row.bannerStatus = true
+  try {
+    goodsId.value = row.id;
+    const res = await goodsApi.readGoods(goodsId.value);
+    bannerForm.banners = res.goodsBanner.map((item) => item.url);
+    row.bannerStatus = false
+    dialogVisible.value = true;
+  } catch (error) {
+    concole.table(error);
+    notification("获取轮播图数据失败", "error");
+    row.bannerStatus = false
+  }
 };
 const handleClose = () => {
   bannerForm.banners = [];
   dialogVisible.value = false;
 };
-const emits = defineEmits(['reloadData'])
+const emits = defineEmits(["reloadData"]);
 defineExpose({
   open,
 });
