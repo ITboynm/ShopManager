@@ -10,13 +10,16 @@
     <el-form :model="bannerForm" ref="bannerFormRef" label-width="80px">
       <el-form-item label="轮播图">
         <ChooseImage
-          :limit="6"
+          :limit="9"
+          :checkMore="true"
           ref="chosseImageRef"
           v-model:avatar="bannerForm.banners"
         ></ChooseImage>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onBannerSubmit">提交</el-button>
+        <el-button :loading="loading" type="primary" @click="onBannerSubmit"
+          >提交</el-button
+        >
       </el-form-item>
     </el-form>
   </el-drawer>
@@ -30,23 +33,29 @@ import goodsApi from "@/api/goods";
 const chosseImageRef = ref(null);
 const dialogVisible = ref(false);
 const bannerFormRef = ref(null);
+const loading = ref(false);
 const bannerForm = reactive({
   banners: [],
 });
 const goodsId = ref(0);
 const onBannerSubmit = async () => {
+  loading.value = true;
   try {
     const res = await goodsApi.setGoodsBanners(
       goodsId.value,
       bannerForm.banners
     );
     if (res.length) {
-      dialogVisible.value = false;
-      return notification("设置轮播图成功");
+      handleClose();
+      notification("设置轮播图成功");
+      emits('reloadData')
+    } else {
+      notification("设置轮播图失败", "error");
     }
-    notification("设置轮播图失败", "error");
+    loading.value = false;
   } catch (error) {
     concole.table(error);
+    loading.value = false;
     notification("设置轮播图失败", "error");
   }
 };
@@ -70,6 +79,7 @@ const handleClose = () => {
   bannerForm.banners = [];
   dialogVisible.value = false;
 };
+const emits = defineEmits(['reloadData'])
 defineExpose({
   open,
 });

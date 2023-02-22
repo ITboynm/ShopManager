@@ -175,7 +175,7 @@
                 >
                 <el-button
                   size="small"
-                  type="primary"
+                  :type="row.goods_banner.length ? 'primary' : 'danger'"
                   text
                   icon="Picture"
                   @click="setGoodsBanners(row)"
@@ -214,7 +214,7 @@
           />
         </div>
       </el-card>
-      <Banners ref="bannersForm"></Banners>
+      <Banners @reloadData="getData(pager)" ref="bannersForm"></Banners>
     </div>
     <FormDrawer
       :title="isEdit ? '编辑' : '新增'"

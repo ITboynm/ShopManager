@@ -107,6 +107,14 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  limitMax: {
+    type: Number,
+    default: null,
+  },
+  checkMore: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emits = defineEmits(["choose"]);
@@ -194,12 +202,13 @@ const checkedImage = computed(() =>
 const handleChooseChange = (item) => {
   if (item.checked && checkedImage.value.length > props.limit) {
     item.checked = false;
+    if (props.limitMax)
+      return notification(`至多上传${props.limitMax}张图片`, "info");
     return notification(`至多选中${props.limit}张图片`, "info");
   }
-  let data =
-    props.limit > 1
-      ? checkedImage.value.map((item) => item?.url)
-      : checkedImage.value[0]?.url;
+  let data = props.checkMore
+    ? checkedImage.value.map((item) => item?.url)
+    : checkedImage.value[0]?.url;
   emits("choose", data);
 };
 

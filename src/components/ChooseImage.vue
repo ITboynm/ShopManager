@@ -33,6 +33,7 @@
           <el-image
             :src="imgUrl"
             alt=""
+            :lazy="true"
             :fit="cover"
             class="choose-image-btn mr-1 mb-1"
           />
@@ -53,7 +54,9 @@
             ref="imageMainRef"
             :isChoose="true"
             @choose="handleChoose"
-            :limit="limit"
+            :limit="limitSize"
+            :limitMax="limit"
+            :checkMore="checkMore"
           />
         </el-container>
       </el-container>
@@ -66,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, computed } from "vue";
 import ImageAside from "@/components/ImageAside.vue";
 import ImageMain from "@/components/ImageMain.vue";
 const imageMainRef = ref(null);
@@ -79,9 +82,17 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  checkMore: {
+    type: Boolean,
+    default: false,
+  },
 });
 let imageURL = ref(null);
 let iamgeArray = ref([]);
+const limitSize = computed(() => {
+  if (props.avatar instanceof Array) return props.limit - props.avatar.length;
+  return 1;
+});
 watch(
   () => props.avatar,
   (newVal, oldVal) => {
@@ -90,6 +101,7 @@ watch(
 );
 
 const handleChoose = (Url) => {
+  console.log(Url);
   if (isChecked) return;
   if ((Url && typeof props.avatar == "string") || !props.avatar) {
     imageURL.value = Url;
@@ -112,8 +124,12 @@ const close = () => {
   imageMainRef.value.resetChecked();
   imageURL.value = null;
 };
+
 const submit = () => {
-  iamgeArray.value.length && imageURL.value.push(...iamgeArray.value);
+  if (iamgeArray.value.length) {
+    imageURL.value.push(...iamgeArray.value);
+    iamgeArray.value = [];
+  }
   emits("update:avatar", imageURL.value);
   close();
 };
