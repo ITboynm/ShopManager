@@ -98,6 +98,15 @@ export default {
       // mock: false
     });
   },
+  // 查看商品资料 测试用接口（多规格）
+  readGoodsTest(id, params) {
+    return request({
+      url: `/goods/reads/${id}`,
+      method: "get",
+      data: params,
+      // mock: false
+    });
+  },
   // 更新商品规格
   updateGoodsSkus(id, params) {
     return request({
@@ -180,5 +189,3 @@ export default {
     });
   },
 };
-
-

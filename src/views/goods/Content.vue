@@ -47,6 +47,7 @@ const handleSubmit = async () => {
     });
     if (res) {
       notification("商品详情修改成功");
+      emits('reloadData')
       formDrawerRef.value.close();
     } else {
       notification("商品详情修改失败", "error");

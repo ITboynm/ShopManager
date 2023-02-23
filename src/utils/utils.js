@@ -66,7 +66,19 @@ const recursionTree = (options) => {
 const toTime = (data = "") => {
   return data ? new Date(data).getTime() : new Date().getTime();
 };
+
+// 数组排序 上移 下移
+const useArrayMove = (type, arr, index) => {
+  if (type == "up") swapArray(arr, index, index - 1);
+  if (type == "down") swapArray(arr, index, index + 1);
+};
+// 调换位置
+function swapArray(arr, index1, index2) {
+  arr[index1] = arr.splice(index2, 1, arr[index1])[0];
+  return arr;
+}
 export {
+  useArrayMove,
   notification,
   showModal,
   showPromptModal,
