@@ -95,6 +95,25 @@ function cartesianProductOf() {
   );
 }
 
+// 通用请求流程
+async function fetchData(api, data, text, unnotification = false) {
+  try {
+    const res = await api(data);
+    if (res) {
+      if (!unnotification) {
+        notification(`${text}成功`);
+      }
+    } else {
+      notification(`${text}失败`, "error");
+      return Promise.resolve({ error: `${text}失败` });
+    }
+    return Promise.resolve(res);
+  } catch (error) {
+    notification(`${text}失败`, "error");
+    return Promise.resolve({ error });
+  }
+}
+
 export {
   useArrayMove,
   notification,
@@ -105,4 +124,5 @@ export {
   recursionTree,
   cartesianProductOf,
   toTime,
+  fetchData,
 };

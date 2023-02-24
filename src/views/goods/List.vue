@@ -391,7 +391,6 @@ import { useTableInit, useInitForm } from "@/composables/useCommon";
 import Banners from "@/views/goods/Banners.vue";
 import Content from "@/views/goods/Content.vue";
 import Skus from "@/views/goods/Skus.vue";
-const selectData = ref([]);
 const bannersForm = ref(null);
 const contentForm = ref(null);
 const skusForm = ref(null);

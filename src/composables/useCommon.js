@@ -124,6 +124,7 @@ export function useTableInit(options = {}) {
       resetMultipleTable();
       loading.value = false;
     } catch (error) {
+      console.log(error);
       notification("删除失败", "error");
       resetMultipleTable();
       loading.value = false;
@@ -209,6 +210,7 @@ export function useTableInit(options = {}) {
     handleStatusChange,
     handleSelectionChange,
     handleShopStatus,
+    resetMultipleTable,
     multiSelectionIds,
     queryRules,
     columns,
