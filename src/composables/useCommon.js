@@ -108,9 +108,9 @@ export function useTableInit(options = {}) {
     pager.page = cur;
     getParams();
   };
-  // 删除/批量删除
+  // 删除/批量删除/彻底删除
   const handleDelete = async (id) => {
-    if ((id instanceof Array) && !id.length)
+    if (id instanceof Array && !id.length)
       return notification(`请选择商品`, "info");
     loading.value = true;
     try {
@@ -125,6 +125,37 @@ export function useTableInit(options = {}) {
       loading.value = false;
     } catch (error) {
       notification("删除失败", "error");
+      resetMultipleTable();
+      loading.value = false;
+    }
+  };
+
+  // 彻底删除/恢复商品 options.destroyApi
+  const handleShopStatus = async (id, type) => {
+    if (id instanceof Array && !id.length)
+      return notification(`请选择商品`, "info");
+    loading.value = true;
+    let res;
+    let text = "操作";
+    try {
+      if (type == "destroy") {
+        res = await options.destroyApi(id);
+        text = "彻底删除";
+      } else {
+        res = await options.restoreApi(id);
+        text = "商品恢复";
+      }
+
+      if (res) {
+        notification(`${text}成功`);
+        getData();
+      } else {
+        notification(`${text}失败`, "error");
+      }
+      resetMultipleTable();
+      loading.value = false;
+    } catch (error) {
+      notification(`${text}失败`, "error");
       resetMultipleTable();
       loading.value = false;
     }
@@ -177,6 +208,7 @@ export function useTableInit(options = {}) {
     handleDelete,
     handleStatusChange,
     handleSelectionChange,
+    handleShopStatus,
     multiSelectionIds,
     queryRules,
     columns,

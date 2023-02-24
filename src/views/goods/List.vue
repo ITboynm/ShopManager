@@ -57,11 +57,52 @@
       >
         <!-- 新增和刷新 -->
         <ListHeader
-          layout="create,delete,refresh"
+          layout="create,refresh"
           @create="handleCreate"
           @refresh="getData(pager)"
-          @delete="handleDelete(multiSelectionIds)"
         >
+          <el-popconfirm
+            v-if="queryform.tab != 'delete'"
+            title="是否删除选中项?"
+            confirm-button-text="确认"
+            cancel-button-text="取消"
+            width="158px"
+            @confirm="handleDelete(multiSelectionIds)"
+          >
+            <template #reference>
+              <el-button type="danger" size="small" icon="Delete"
+                >批量删除</el-button
+              >
+            </template>
+          </el-popconfirm>
+          <div v-else class="inline-block ml-[12px]">
+            <el-popconfirm
+              title="是否彻底删除选中项?"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              width="178px"
+              @confirm="handleShopStatus(multiSelectionIds, 'destroy')"
+            >
+              <template #reference>
+                <el-button type="danger" size="small" icon="Delete"
+                  >彻底删除</el-button
+                >
+              </template>
+            </el-popconfirm>
+            <el-popconfirm
+              title="是否恢复选中项?"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              width="158px"
+              @confirm="handleShopStatus(multiSelectionIds, 'res')"
+            >
+              <template #reference>
+                <el-button type="warning" size="small" icon="RefreshLeft"
+                  >恢复商品</el-button
+                >
+              </template>
+            </el-popconfirm>
+          </div>
           <el-button
             v-for="item in upAndDown"
             size="small"
@@ -378,6 +419,7 @@ const {
   handleSelectionChange,
   handleStatusChange,
   changeCurrent,
+  handleShopStatus,
   loading,
   queryform,
   queryRules,
@@ -389,6 +431,8 @@ const {
   queryApi: goodsApi.getGoodsStatus,
   deleteApi: goodsApi.deleteGoods,
   updateStateApi: goodsApi.changeGoodsStatus,
+  destroyApi: goodsApi.destroyGoods,
+  restoreApi: goodsApi.restoreGoods,
   queryform: {
     title: "",
     tab: "all",
