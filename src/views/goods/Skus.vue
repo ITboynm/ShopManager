@@ -73,7 +73,7 @@ import { ref, reactive, nextTick } from "vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import SkuCard from "@/views/goods/components/SkuCard.vue";
 import SkuTable from "@/views/goods/components/SkuTable.vue";
-import { initSkuCardList, goodsId } from "@/composables/useSku";
+import { initSkuCardList, goodsId, sku_list } from "@/composables/useSku";
 import { notification } from "@/utils/utils";
 import { cloneDeep } from "lodash";
 import goodsApi from "@/api/goods";
@@ -113,7 +113,6 @@ const initSkus = {
 const skusForm = reactive({
   sku_type: 0, //0单规格，1多规格
   sku_value: cloneDeep(initSkus.sku_value),
-  goodsSkus: cloneDeep(initSkus.goodsSkus),
 });
 
 const open = async (row) => {
@@ -140,16 +139,16 @@ const handleSubmit = async () => {
   formDrawerRef.value.showLoading();
   try {
     let params = {
-      sku_type: goodsId.value,
+      sku_type: skusForm.sku_type,
       goodsSkus: [],
       sku_value: {},
     };
     if (skusForm.sku_type) {
-      params.goodsSkus = cloneDeep(skusForm.goodsSkus);
+      params.goodsSkus = cloneDeep(sku_list.value);
     } else {
       params.sku_value = cloneDeep(skusForm.sku_value);
     }
-    const res = await goodsApi.updateGoodsSkus(params.sku_type, params);
+    const res = await goodsApi.updateGoodsSkus(goodsId.value, params);
     if (res) {
       notification("商品规格修改成功");
       formDrawerRef.value.close();
@@ -169,4 +168,10 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+.formDrawer .body {
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+}
+</style>
