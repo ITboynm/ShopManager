@@ -208,7 +208,7 @@
                   confirm-button-text="确认"
                   cancel-button-text="取消"
                   width="158px"
-                  @confirm="handleDelete(scope.row.id)"
+                  @confirm="handleDelete(row.id)"
                 >
                   <template #reference>
                     <el-button size="small" type="primary" icon="Delete" text
