@@ -177,7 +177,13 @@
           >
             <template #default="{ row }">
               <div v-if="row.ischeck == 0">
-                <el-button type="success" size="small" plain>
+                <el-button
+                  type="success"
+                  size="small"
+                  plain
+                  :loading="row.okLoading"
+                  @click="checkShop(row, 1)"
+                >
                   审核通过
                 </el-button>
                 <el-button
@@ -186,6 +192,8 @@
                   plain
                   class="mt-2"
                   style="margin-left: 0"
+                  :loading="row.unLoading"
+                  @click="checkShop(row, 0)"
                 >
                   审核拒绝
                 </el-button>
@@ -379,7 +387,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import goodsApi from "@/api/goods";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
@@ -388,6 +396,7 @@ import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import { tabbars, unitList } from "@/views/goods/parameter";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
+import { fetchData } from "@/utils/utils";
 import Banners from "@/views/goods/Banners.vue";
 import Content from "@/views/goods/Content.vue";
 import Skus from "@/views/goods/Skus.vue";
@@ -459,6 +468,8 @@ const {
       item.bannerStatus = false;
       item.contentStatus = false;
       item.skusStatus = false;
+      item.okLoading = false;
+      item.unLoading = false;
       return item;
     });
   },
@@ -499,6 +510,20 @@ const {
 const setGoodsBanners = (row) => bannersForm.value.open(row);
 const setGoodsContent = (row) => contentForm.value.open(row);
 const setGoodsSkus = (row) => skusForm.value.open(row);
+
+const checkShop = async (row, ischeck) => {
+  ischeck ? (row.okLoading = true) : (row.unLoading = true);
+  const res = await fetchData(
+    goodsApi.checkGoods,
+    {
+      fetchId: row.id,
+      ischeck,
+    },
+    "审核"
+  );
+  res.error ? console.log(res.error) : getData(pager);
+  ischeck ? (row.okLoading = false) : (row.unLoading = false);
+};
 </script>
 
 <style scoped lang="scss">

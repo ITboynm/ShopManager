@@ -98,7 +98,13 @@ function cartesianProductOf() {
 // 通用请求流程
 async function fetchData(api, data, text, unnotification = false) {
   try {
-    const res = await api(data);
+    let res;
+    const { fetchId, ...param } = data;
+    if (fetchId) {
+      res = await api(fetchId, param);
+    } else {
+      res = await api(data);
+    }
     if (res) {
       if (!unnotification) {
         notification(`${text}成功`);
