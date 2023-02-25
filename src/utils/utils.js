@@ -101,7 +101,7 @@ async function fetchData(api, data, text, unnotification = false) {
     let res;
     const { fetchId, ...param } = data;
     if (fetchId) {
-      res = await api(fetchId, param);
+      param.fetchContent ? res = await api(fetchId, param.fetchContent) : res = await api(fetchId, param);
     } else {
       res = await api(data);
     }
