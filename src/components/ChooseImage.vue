@@ -76,6 +76,7 @@ const limitMoreSize = computed(() => {
 watch(
   () => props.avatar,
   (newVal, oldVal) => {
+    if(!newVal) return imageURL.value = 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
     imageURL.value = typeof newVal == "string" ? newVal : [...newVal];
   }
 );

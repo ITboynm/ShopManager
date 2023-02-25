@@ -246,7 +246,10 @@ export function useInitForm(options = {}) {
   const createForm = reactive(options.createForm);
 
   // 新增
-  const handleCreate = async () => {
+  const handleCreate = async (row = null, fun) => {
+    if (typeof fun == 'function') {
+      fun(row)
+    }
     isEdit.value = false;
     resetForm();
     reset();
@@ -254,8 +257,11 @@ export function useInitForm(options = {}) {
     formDrawerRef.value.open();
   };
   // 编辑
-  const handleEdit = async (row) => {
+  const handleEdit = async (row = null, fun) => {
     isEdit.value = true;
+    if (typeof fun == 'function') {
+      fun(row)
+    }
     resetForm();
     formDrawerRef.value.open();
     nextTick(() => {
