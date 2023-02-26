@@ -10,17 +10,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
+  base: '/',
   server: {
     host: "localhost",
     port: 8003,
     proxy: {
-      "/admin": {
+      '/admin': {
         // 线上的接口
-        // target: "http://ceshi13.dishait.cn",
+        target: 'http://ceshi13.dishait.cn',
         // mock接口
-        target: "https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694",
-        changeOrigin: true
-      }
+        // target: "https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/admin/, '')
+      },
     }
   },
   plugins: [

@@ -58,16 +58,16 @@ export function useTableInit(options = {}) {
    *
    * */
   const getParams = (config = pager) => {
-    const querParams = {};
+    const queryParams = {};
     for (const key in toRaw(queryform)) {
       let val = toRaw(queryform)[key];
-      if (val || val == 0 || val == false) querParams[key] = val;
+      if (val || val === 0 || val === false) queryParams[key] = val;
     }
-    Object.keys(querParams).length
-      ? getData(config, querParams)
+    Object.keys(queryParams).length
+      ? getData(config, queryParams)
       : getData(config);
 
-    return querParams;
+    return queryParams;
   };
 
   const handleQuery = async (isOk) => {

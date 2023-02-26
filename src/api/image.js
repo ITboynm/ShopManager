@@ -30,5 +30,5 @@ export default {
       // mock: false
     });
   },
-  uploadImageUrl: "/admin/image/upload",
+  uploadImageUrl: "/image/upload",
 };

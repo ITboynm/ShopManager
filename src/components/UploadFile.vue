@@ -1,17 +1,8 @@
 <template>
   <div id="">
-    <el-upload
-      drag
-      :action="imageApi.uploadImageUrl"
-      :headers="{
-        token: operateToken.getToken(),
-      }"
-      multiple
-      name="img"
-      :data="data"
-      :on-success="uploadSuccess"
-      :on-error="uploadError"
-    >
+    <el-upload drag :action='config.baseApi + imageApi.uploadImageUrl' :headers="{
+      token: operateToken.getToken().token,
+    }" multiple name="img" :data="data" :on-success="uploadSuccess" :on-error="uploadError">
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">
         Drop file here or <em>click to upload</em>
@@ -27,6 +18,7 @@
 
 <script setup>
 import imageApi from "@/api/image";
+import config from "@/config"
 import operateToken from "@/utils/auth";
 import { notification } from "@/utils/utils";
 const props = defineProps({

@@ -1,6 +1,6 @@
 <template>
   <el-col :span="span" :offset="0">
-    <el-form-item :label="label" :prop="prop" class="w-[100%]">
+    <el-form-item :label="label" :prop="prop" :size="size" class="w-[100%]">
       <slot></slot>
     </el-form-item>
   </el-col>
@@ -23,6 +23,10 @@ defineProps({
   prop: {
     type: String,
     default: "",
+  },
+  size: {
+    type: String,
+    default: "small",
   },
 });
 </script>

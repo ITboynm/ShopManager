@@ -2,8 +2,8 @@
 axios二次封装
 */
 import axios from "axios"
-import config from "../config"
-import { router } from "../router"
+import config from "@/config"
+import { router } from "@/router"
 import operateToken from '@/utils/auth'
 import { notification } from '@/utils/utils'
 import { useStore } from 'vuex'
@@ -28,7 +28,7 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use((res) => {
-    const { data } = res.data
+    const { data } = res.request.responseType == "blob" ? res : res.data
     return data
 }, (error) => {
     let msg = error.response?.data?.msg || ' 请求失败'
