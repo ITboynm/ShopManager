@@ -72,7 +72,23 @@ const asyncRoutes = [
         name: '/setting/base',
         component: () => import(/* webpackChunkName: "SttingBase" */ '@/views/setting/Base.vue'),
         meta: {
-            title: '配置'
+            title: '系统设置'
+        }
+    },
+    {
+        path: '/setting/buy',
+        name: '/setting/buy',
+        component: () => import(/* webpackChunkName: "SttingBuy" */ '@/views/setting/Buy.vue'),
+        meta: {
+            title: '交易设置'
+        }
+    },
+    {
+        path: '/setting/ship',
+        name: '/setting/ship',
+        component: () => import(/* webpackChunkName: "SttingShip" */ '@/views/setting/Ship.vue'),
+        meta: {
+            title: '物流设置'
         }
     },
     {
