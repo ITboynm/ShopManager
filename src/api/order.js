@@ -7,7 +7,7 @@ export default {
     getShipInfo(id, params) {
         return request({
             url: `/order/${id}/get_ship_info`,
-            method: "post",
+            method: "get",
             data: params,
             // mock: false
         });

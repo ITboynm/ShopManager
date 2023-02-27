@@ -138,6 +138,22 @@ const asyncRoutes = [
         meta: {
             title: '会员等级'
         }
+    },
+    {
+        path: '/distribution/index',
+        name: '/distribution/index',
+        component: () => import(/* webpackChunkName: "distribution" */ '@/views/distribution/Index.vue'),
+        meta: {
+            title: '分销员管理'
+        }
+    },
+    {
+        path: '/distribution/setting',
+        name: '/distribution/setting',
+        component: () => import(/* webpackChunkName: "distributionSetting" */ '@/views/distribution/setting.vue'),
+        meta: {
+            title: '分销设置'
+        }
     }
 ]
 

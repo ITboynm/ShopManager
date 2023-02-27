@@ -1,15 +1,29 @@
 <template>
   <div>
     <div class="flex flex-wrap w-[100%]" v-if="!preview">
-      <div class="choose-image-btn" @click="open" v-if="!(avatar instanceof Array)">
+      <div
+        class="choose-image-btn"
+        @click="open"
+        v-if="!(avatar instanceof Array)"
+      >
         <el-icon v-if="!avatar" :size="25" color="rgba(107, 114, 128, 0.5)">
           <Plus />
         </el-icon>
-        <el-image v-else :src="avatar" alt="" :fit="cover" class="h-[100%] w-[100%]" />
+        <el-image
+          v-else
+          :src="avatar"
+          alt=""
+          :fit="cover"
+          class="h-[100%] w-[100%]"
+        />
       </div>
       <div v-else class="flex flex-wrap">
         <div class="choose-image-btn mr-1 order-2" @click="open">
-          <el-icon v-if="!avatar || avatar instanceof Array" :size="25" color="rgba(107, 114, 128, 0.5)">
+          <el-icon
+            v-if="!avatar || avatar instanceof Array"
+            :size="25"
+            color="rgba(107, 114, 128, 0.5)"
+          >
             <Plus />
           </el-icon>
         </div>
@@ -19,16 +33,34 @@
               <Delete />
             </el-icon>
           </div>
-          <el-image :src="imgUrl" alt="" :lazy="true" :fit="cover" class="choose-image-btn mr-1 mb-1" />
+          <el-image
+            :src="imgUrl"
+            alt=""
+            :lazy="true"
+            :fit="cover"
+            class="choose-image-btn mr-1 mb-1"
+          />
         </div>
       </div>
     </div>
-    <el-dialog title="选择图片" v-model="dialogVisible" class="chooseImagedDialogClass" width="80%" top="5vh">
+    <el-dialog
+      title="选择图片"
+      v-model="dialogVisible"
+      class="chooseImagedDialogClass"
+      width="80%"
+      top="5vh"
+    >
       <el-container class="bg-white rounded container" style="height: 70vh">
         <el-container>
           <image-aside ref="imageAsideRef" :isChoose="true" />
-          <image-main ref="imageMainRef" :isChoose="true" @choose="handleChoose" :limit="limitMoreSize" :limitMax="limit"
-            :checkMore="checkMore" />
+          <image-main
+            ref="imageMainRef"
+            :isChoose="true"
+            @choose="handleChoose"
+            :limit="limitMoreSize"
+            :limitMax="limit"
+            :checkMore="checkMore"
+          />
         </el-container>
       </el-container>
       <template #footer>
@@ -64,11 +96,11 @@ const props = defineProps({
   preview: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 let imageURL = ref(null);
 let imageArray = ref([]);
-const callbackFun = ref(null)
+const callbackFun = ref(null);
 const limitMoreSize = computed(() => {
   if (props.avatar instanceof Array) return props.limit - props.avatar.length;
   return props.limitSize;
@@ -76,7 +108,9 @@ const limitMoreSize = computed(() => {
 watch(
   () => props.avatar,
   (newVal, oldVal) => {
-    if(!newVal) return imageURL.value = 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
+    if (!newVal)
+      return (imageURL.value =
+        "https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png");
     imageURL.value = typeof newVal == "string" ? newVal : [...newVal];
   }
 );
@@ -93,7 +127,7 @@ const handleChoose = (Url) => {
 const emits = defineEmits(["update:avatar"]);
 
 const open = (callback = null) => {
-  callbackFun.value = callback
+  callbackFun.value = callback;
   isChecked = false;
   dialogVisible.value = true;
   imageAsideRef.value?.initActiveID();
@@ -111,8 +145,8 @@ const submit = () => {
     imageURL.value.push(...imageArray.value);
     imageArray.value = [];
   }
-  if (props.preview && typeof callbackFun.value == 'function') {
-    callbackFun.value(imageURL.value)
+  if (props.preview && typeof callbackFun.value == "function") {
+    callbackFun.value(imageURL.value);
   } else {
     emits("update:avatar", imageURL.value);
   }
@@ -125,8 +159,8 @@ const delImages = (index) => {
 };
 
 defineExpose({
-  open
-})
+  open,
+});
 </script>
 
 <style lang="scss">
