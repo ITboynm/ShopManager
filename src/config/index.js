@@ -18,7 +18,12 @@ const EnvConfig = {
     prod: {
         baseApi: 'http://ceshi13.dishait.cn/admin',
         mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
-    }
+    },
+     // 打包
+     build: {
+        baseApi: 'http://ceshi13.dishait.cn/admin',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
+    },
 }
 export default {
     // 环境
