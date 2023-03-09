@@ -4,7 +4,7 @@ export default {
   // 获取菜单权限
   getRules({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/rule/${page}?limit=${limit}`,
+      url: `/admin/rule/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 增加菜单权限
   setRule(params) {
     return request({
-      url: `/rule`,
+      url: `/admin/rule`,
       method: "post",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 修改菜单权限
   updateRule(id, params) {
     return request({
-      url: `/rule/${id}`,
+      url: `/admin/rule/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 删除菜单权限
   deleteRule(id, params) {
     return request({
-      url: `/rule/${id}/delete`,
+      url: `/admin/rule/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -40,7 +40,7 @@ export default {
   // 修改菜单权限状态
   updateRuleStatus(id, params) {
     return request({
-      url: `/rule/${id}/update_status`,
+      url: `/admin/rule/${id}/update_status`,
       method: "post",
       data: params,
       // mock: false

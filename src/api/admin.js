@@ -4,7 +4,7 @@ export default {
   // 登录
   login(params) {
     return request({
-      url: "/login",
+      url: "/admin/login",
       method: "post",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 退出登录
   logout(params) {
     return request({
-      url: "/logout",
+      url: "/admin/logout",
       method: "post",
       data: params,
       mock: false,
@@ -22,7 +22,7 @@ export default {
   // 获取管理员信息
   getUserInfo(params) {
     return request({
-      url: "/getinfo",
+      url: "/admin/getinfo",
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 修改密码
   updatePassword(params) {
     return request({
-      url: "/updatepassword",
+      url: "/admin/updatepassword",
       method: "post",
       data: params,
       // mock: false,
@@ -40,7 +40,7 @@ export default {
   // 获取管理员列表
   getManagers({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/manager/${page}?limit=${limit}`,
+      url: `/admin/manager/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false,
@@ -49,7 +49,7 @@ export default {
   // 修改管理员状态
   updateManagerState(id, params) {
     return request({
-      url: `/manager/${id}/update_status`,
+      url: `/admin/manager/${id}/update_status`,
       method: "post",
       data: params,
       // mock: false,
@@ -58,7 +58,7 @@ export default {
   // 新增管理员
   setManager(params) {
     return request({
-      url: `/manager`,
+      url: `/admin/manager`,
       method: "post",
       data: params,
       // mock: false,
@@ -67,7 +67,7 @@ export default {
   // 修改管理员
   updateManager(id, params) {
     return request({
-      url: `/manager/${id}`,
+      url: `/admin/manager/${id}`,
       method: "post",
       data: params,
       // mock: false,
@@ -76,7 +76,7 @@ export default {
    // 删除管理员
    deleteManager(id, params) {
     return request({
-      url: `/manager/${id}/delete`,
+      url: `/admin/manager/${id}/delete`,
       method: "post",
       data: params,
       // mock: false,

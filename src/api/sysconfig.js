@@ -6,7 +6,7 @@ export default {
     // 	获取原有系统设置
     getSysconfig(params) {
         return request({
-            url: `/sysconfig`,
+            url: `/admin/sysconfig`,
             method: "get",
             data: params,
             // mock: false
@@ -15,7 +15,7 @@ export default {
     // 修改系统配置
     updateSysconfig(params) {
         return request({
-            url: `/sysconfig`,
+            url: `/admin/sysconfig`,
             method: "post",
             data: params,
             // mock: false
@@ -24,11 +24,11 @@ export default {
     // 上传文件
     sysconfigUpload(params) {
         return request({
-            url: `/sysconfig/upload`,
+            url: `/admin/sysconfig/upload`,
             method: "post",
             data: params,
             // mock: false
         });
     },
-    uploadAction: `${config.baseApi}/sysconfig/upload`
+    uploadAction: `${config.baseApi}/admin/sysconfig/upload`
 };

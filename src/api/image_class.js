@@ -4,7 +4,7 @@ export default {
   // 图库列表接口
   getImageClassList({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/image_class/${page}?limit=${limit}`,
+      url: `/admin/image_class/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 增加图库分类
   setImageClass(params) {
     return request({
-      url: `/image_class`,
+      url: `/admin/image_class`,
       method: "post",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 修改图库分类
   updateImageClass(id, params) {
     return request({
-      url: `/image_class/${id}`,
+      url: `/admin/image_class/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 删除图库分类
   deleteImageClass(id, params) {
     return request({
-      url: `/image_class/${id}/delete`,
+      url: `/admin/image_class/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -40,7 +40,7 @@ export default {
   // 指定图库列表接口
   getImageClassListById(id, { page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/image_class/${id}/image/${page}?limit=${limit}`,
+      url: `/admin/image_class/${id}/image/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false

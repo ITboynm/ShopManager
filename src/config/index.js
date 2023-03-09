@@ -6,23 +6,23 @@ const env = import.meta.env.MODE || 'prod'
 const EnvConfig = {
     // 开发环境
     dev: {
-        baseApi: '/admin',
-        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
+        baseApi: '/api',
+        mockApi: '/api'
     },
     // 测试环境
     test: {
-        baseApi: 'http://ceshi13.dishait.cn/admin',
-        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
+        baseApi: 'http://ceshi13.dishait.cn',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694'
     },
     // 生产环境
     prod: {
-        baseApi: 'http://ceshi13.dishait.cn/admin',
-        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
+        baseApi: 'http://ceshi13.dishait.cn',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694'
     },
      // 打包
      build: {
-        baseApi: 'http://ceshi13.dishait.cn/admin',
-        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
+        baseApi: 'http://ceshi13.dishait.cn',
+        mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694'
     },
 }
 export default {

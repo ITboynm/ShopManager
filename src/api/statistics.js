@@ -4,7 +4,7 @@ export default {
   // 获统计数据1
   getStatistics1(params) {
     return request({
-      url: "/statistics1",
+      url: "/admin/statistics1",
       method: "get",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 获统计数据2
   getStatistics2(params) {
     return request({
-      url: "/statistics2",
+      url: "/admin/statistics2",
       method: "get",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 获取图表数据
   getStatistics3(params) {
     return request({
-      url: `/statistics3?type=${params}`,
+      url: `/admin/statistics3?type=${params}`,
       method: "get",
       data: "",
       // mock: false

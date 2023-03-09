@@ -4,7 +4,7 @@ export default {
   // 商品分类列表
   getCategorys(params) {
     return request({
-      url: `/category`,
+      url: `/admin/category`,
       method: "get",
       data: "",
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 增加商品分类
   setCategory(params) {
     return request({
-      url: `/category`,
+      url: `/admin/category`,
       method: "post",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 修改商品分类
   updateCategory(id, params) {
     return request({
-      url: `/category/${id}`,
+      url: `/admin/category/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 修改商品分类状态
   updateCategoryStatus(id, params) {
     return request({
-      url: `/category/${id}/update_status`,
+      url: `/admin/category/${id}/update_status`,
       method: "post",
       data: params,
       // mock: false
@@ -40,7 +40,7 @@ export default {
   // 删除商品分类
   deleteCategory(id) {
     return request({
-      url: `/category/${id}/delete`,
+      url: `/admin/category/${id}/delete`,
       method: "post",
       data: '',
       // mock: false
@@ -49,7 +49,7 @@ export default {
   // 分类关联产品列表
   getCategorysItemList(params) {
     return request({
-      url: `/app_category_item/list`,
+      url: `/admin/app_category_item/list`,
       method: "get",
       data: params,
       // mock: false
@@ -58,7 +58,7 @@ export default {
   // 删除关联产品
   deleteCategorysItemList(id, params) {
     return request({
-      url: `/app_category_item/${id}/delete`,
+      url: `/admin/app_category_item/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -67,7 +67,7 @@ export default {
   // 关联产品
   setCategorysItemList(params) {
     return request({
-      url: `/app_category_item`,
+      url: `/admin/app_category_item`,
       method: "post",
       data: params,
       // mock: false

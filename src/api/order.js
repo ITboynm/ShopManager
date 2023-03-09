@@ -6,7 +6,7 @@ export default {
     // 查看物流信息
     getShipInfo(id, params) {
         return request({
-            url: `/order/${id}/get_ship_info`,
+            url: `/admin/order/${id}/get_ship_info`,
             method: "get",
             data: params,
             // mock: false
@@ -15,7 +15,7 @@ export default {
     // 	快递公司列表
     getExpressCompany(id, params) {
         return request({
-            url: `/express_company/${id}`,
+            url: `/admin/express_company/${id}`,
             method: "get",
             data: params,
             // mock: false
@@ -25,7 +25,7 @@ export default {
     excelExportOrder(params) {
         const r = queryParams(params)
         return request({
-            url: `/order/excelexport${r}`,
+            url: `/admin/order/excelexport${r}`,
             method: "post",
             data: {},
             responseType: 'blob'
@@ -35,7 +35,7 @@ export default {
     // 同意/拒绝退款
     handleRefund(id, params) {
         return request({
-            url: `/order/${id}/handle_refund`,
+            url: `/admin/order/${id}/handle_refund`,
             method: "post",
             data: params,
             // mock: false
@@ -44,7 +44,7 @@ export default {
     // 订单发货
     orderShip(id, params) {
         return request({
-            url: `/order/${id}/ship`,
+            url: `/admin/order/${id}/ship`,
             method: "post",
             data: params,
             // mock: false
@@ -54,7 +54,7 @@ export default {
     deleteOrders(ids) {
         const params = Array.isArray(ids) ? { ids } : { ids: [ids] };
         return request({
-            url: `/order/delete_all`,
+            url: `/admin/order/delete_all`,
             method: "post",
             data: params,
             // mock: false
@@ -63,7 +63,7 @@ export default {
     // 订单列表
     getOrders({ page, limit } = { page: 1, limit: 10 }, params) {
         return request({
-            url: `/order/${page}?limit=${limit}`,
+            url: `/admin/order/${page}?limit=${limit}`,
             method: "get",
             data: params,
             // mock: false

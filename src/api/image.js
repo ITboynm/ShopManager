@@ -4,7 +4,7 @@ export default {
   // 修改图片名称
   updateImageName(id, params) {
     return request({
-      url: `/image/${id}`,
+      url: `/admin/image/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -15,7 +15,7 @@ export default {
   //   { "ids": [ 483 ] //图片ID组成的一维数组}
   deleteImage(params) {
     return request({
-      url: `/image/delete_all`,
+      url: `/admin/image/delete_all`,
       method: "post",
       data: params,
       // mock: false
@@ -24,11 +24,11 @@ export default {
   //   图片上传
   uploadImage(params) {
     return request({
-      url: `/image/upload`,
+      url: `/admin/image/upload`,
       method: "post",
       data: params,
       // mock: false
     });
   },
-  uploadImageUrl: "/image/upload",
+  uploadImageUrl: "/admin/image/upload",
 };

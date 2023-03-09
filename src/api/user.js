@@ -4,7 +4,7 @@ export default {
     // 新增用户
     setUser(params) {
         return request({
-            url: `/user`,
+            url: `/admin/user`,
             method: "post",
             data: params,
             // mock: false
@@ -13,7 +13,7 @@ export default {
     // 修改用户信息
     updateUser(id, params) {
         return request({
-            url: `/user/${id}`,
+            url: `/admin/user/${id}`,
             method: "post",
             data: params,
             // mock: false
@@ -22,7 +22,7 @@ export default {
     // 删除用户
     deleteUser(id, params) {
         return request({
-            url: `/user/${id}/delete`,
+            url: `/admin/user/${id}/delete`,
             method: "post",
             data: params,
             // mock: false
@@ -31,7 +31,7 @@ export default {
     // 用户列表
     getUsers({ page, limit } = { page: 1, limit: 10 }, params) {
         return request({
-            url: `/user/${page}?limit=${limit}`,
+            url: `/admin/user/${page}?limit=${limit}`,
             method: "get",
             data: params,
             // mock: false
@@ -40,7 +40,7 @@ export default {
     // 修改用户状态
     updateUserStatus(id, params) {
         return request({
-            url: `/user/${id}/update_status`,
+            url: `/admin/user/${id}/update_status`,
             method: "post",
             data: params,
             // mock: false

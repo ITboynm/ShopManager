@@ -4,7 +4,7 @@ export default {
   // 新增公告
   setNotice(params) {
     return request({
-      url: `/notice`,
+      url: `/admin/notice`,
       method: "post",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 修改公告
   updateNotice(id, params) {
     return request({
-      url: `/notice/${id}`,
+      url: `/admin/notice/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 删除公告
   deleteNotice(id, params) {
     return request({
-      url: `/notice/${id}/delete`,
+      url: `/admin/notice/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 公告列表
   getNotices({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/notice/${page}?limit=${limit}`,
+      url: `/admin/notice/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false

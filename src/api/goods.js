@@ -4,7 +4,7 @@ export default {
   // 新增商品
   setGoods(params) {
     return request({
-      url: `/goods`,
+      url: `/admin/goods`,
       method: "post",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 修改商品
   updateGoods(id, params) {
     return request({
-      url: `/goods/${id}`,
+      url: `/admin/goods/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -23,7 +23,7 @@ export default {
   changeGoodsStatus(ids, status) {
     let params = { ids, status };
     return request({
-      url: `/goods/changestatus`,
+      url: `/admin/goods/changestatus`,
       method: "post",
       data: params,
       // mock: false
@@ -32,7 +32,7 @@ export default {
   //  商品列表
   getGoodsStatus({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/goods/${page}?limit=${limit}`,
+      url: `/admin/goods/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false
@@ -42,7 +42,7 @@ export default {
   deleteGoods(ids) {
     const params = Array.isArray(ids) ? { ids } : { ids: [ids] };
     return request({
-      url: `/goods/delete_all`,
+      url: `/admin/goods/delete_all`,
       method: "post",
       data: params,
       // mock: false
@@ -52,7 +52,7 @@ export default {
   restoreGoods(ids) {
     const params = Array.isArray(ids) ? { ids } : { ids: [ids] };
     return request({
-      url: `/goods/restore`,
+      url: `/admin/goods/restore`,
       method: "post",
       data: params,
       // mock: false
@@ -62,7 +62,7 @@ export default {
   destroyGoods(ids) {
     const params = Array.isArray(ids) ? { ids } : { ids: [ids] };
     return request({
-      url: `/goods/destroy`,
+      url: `/admin/goods/destroy`,
       method: "post",
       data: params,
       // mock: false
@@ -71,7 +71,7 @@ export default {
   // 审核商品
   checkGoods(id, params) {
     return request({
-      url: `/goods/${id}/check`,
+      url: `/admin/goods/${id}/check`,
       method: "post",
       data: params,
       // mock: false
@@ -83,7 +83,7 @@ export default {
       ? { banners }
       : { banners: [banners] };
     return request({
-      url: `/goods/banners/${id}`,
+      url: `/admin/goods/banners/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -92,7 +92,7 @@ export default {
   // 查看商品资料
   readGoods(id, params) {
     return request({
-      url: `/goods/read/${id}`,
+      url: `/admin/goods/read/${id}`,
       method: "get",
       data: params,
       // mock: false
@@ -101,7 +101,7 @@ export default {
   // 查看商品资料 测试用接口（多规格）
   readGoodsTest(id, params) {
     return request({
-      url: `/goods/reads/${id}`,
+      url: `/admin/goods/reads/${id}`,
       method: "get",
       data: params,
       // mock: false
@@ -110,7 +110,7 @@ export default {
   // 更新商品规格
   updateGoodsSkus(id, params) {
     return request({
-      url: `/goods/updateskus/${id}`,
+      url: `/admin/goods/updateskus/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -119,7 +119,7 @@ export default {
   // 添加商品规格选项
   setGoodsSkusCard(params) {
     return request({
-      url: `/goods_skus_card`,
+      url: `/admin/goods_skus_card`,
       method: "post",
       data: params,
       // mock: false
@@ -128,7 +128,7 @@ export default {
   // 修改商品规格选项
   updateGoodsSkusCard(id, params) {
     return request({
-      url: `/goods_skus_card/${id}`,
+      url: `/admin/goods_skus_card/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -137,7 +137,7 @@ export default {
   // 删除商品规格选项
   deleteGoodsSkusCard(id, params) {
     return request({
-      url: `/goods_skus_card/${id}/delete`,
+      url: `/admin/goods_skus_card/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -146,7 +146,7 @@ export default {
   // 排序商品规格选项
   sortGoodsSkusCard(params) {
     return request({
-      url: `/goods_skus_card/sort`,
+      url: `/admin/goods_skus_card/sort`,
       method: "post",
       data: params,
       // mock: false
@@ -155,7 +155,7 @@ export default {
   // 添加商品规格选项的值
   createGoodsSkusCardValue(params) {
     return request({
-      url: `/goods_skus_card_value`,
+      url: `/admin/goods_skus_card_value`,
       method: "post",
       data: params,
       // mock: false
@@ -164,7 +164,7 @@ export default {
   // 修改商品规格选项的值
   updateGoodsSkusCardValue(id, params) {
     return request({
-      url: `/goods_skus_card_value/${id}`,
+      url: `/admin/goods_skus_card_value/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -173,7 +173,7 @@ export default {
   // 删除商品规格选项的值
   deleteGoodsSkusCardValue(id, params) {
     return request({
-      url: `/goods_skus_card_value/${id}/delete`,
+      url: `/admin/goods_skus_card_value/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -182,7 +182,7 @@ export default {
   // 选择设置商品规格和选项
   setGoodsSkusCardValue(id, params) {
     return request({
-      url: `/goods_skus_card_value/${id}/set`,
+      url: `/admin/goods_skus_card_value/${id}/set`,
       method: "post",
       data: params,
       // mock: false

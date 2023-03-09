@@ -4,7 +4,7 @@ export default {
   // 新增优惠券
   setCoupon(params) {
     return request({
-      url: `/coupon`,
+      url: `/admin/coupon`,
       method: "post",
       data: params,
       // mock: false
@@ -13,7 +13,7 @@ export default {
   // 修改优惠券
   updateCoupon(id, params) {
     return request({
-      url: `/coupon/${id}`,
+      url: `/admin/coupon/${id}`,
       method: "post",
       data: params,
       // mock: false
@@ -22,7 +22,7 @@ export default {
   // 删除优惠券
   deleteCoupon(id, params) {
     return request({
-      url: `/coupon/${id}/delete`,
+      url: `/admin/coupon/${id}/delete`,
       method: "post",
       data: params,
       // mock: false
@@ -31,7 +31,7 @@ export default {
   // 优惠券列表
   getCoupons({ page, limit } = { page: 1, limit: 10 }, params) {
     return request({
-      url: `/coupon/${page}?limit=${limit}`,
+      url: `/admin/coupon/${page}?limit=${limit}`,
       method: "get",
       data: params,
       // mock: false
@@ -40,7 +40,7 @@ export default {
    // 修改优惠劵状态
    updateCouponStatus(id, params) {
     return request({
-      url: `/coupon/${id}/update_status`,
+      url: `/admin/coupon/${id}/update_status`,
       method: "post",
       data: params,
       // mock: false
