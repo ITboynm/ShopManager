@@ -39,7 +39,6 @@ service.interceptors.response.use(
     return data;
   },
   (error) => {
-    console.log(error);
     let msg = error.response?.data?.msg || " 请求失败";
     if (msg == "非法token，请重新登录") {
       store.dispatch("logout").finally(() => location.reload());
