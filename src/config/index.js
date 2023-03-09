@@ -6,7 +6,7 @@ const env = import.meta.env.MODE || 'prod'
 const EnvConfig = {
     // 开发环境
     dev: {
-        baseApi: 'http://ceshi13.dishait.cn/admin',
+        baseApi: '/admin',
         mockApi: 'https://www.fastmock.site/mock/47dfae3baec8ed8fa9486189651d8694/admin'
     },
     // 测试环境
