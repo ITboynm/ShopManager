@@ -2,9 +2,17 @@
   <div class="login">
     <el-row class="login-row">
       <el-col :lg="16" :md="12" class="login-col-lf">
+        <div class="group-right-sm absolute z-1"></div>
+        <div class="group-right-lg absolute z-1"></div>
         <div>
-          <div class="title">欢迎光临</div>
-          <div class="text-gray-200 text-sm">欢迎光临牛XXX的商城</div>
+          <!-- <div class="title">欢迎光临</div>
+          <div class="text-gray-200 text-sm">欢迎光临牛XXX的商城</div> -->
+          <img
+            src="../assets/images/banner.png"
+            alt=""
+            srcset=""
+            class="z-20 relative"
+          />
         </div>
       </el-col>
       <el-col :lg="8" :md="12" class="login-col-rt">
@@ -124,7 +132,7 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .login {
   &-row {
-    @apply bg-indigo-500 min-h-screen;
+    @apply min-h-screen;
   }
 
   &-col-lf,
@@ -133,13 +141,52 @@ onBeforeUnmount(() => {
   }
 
   &-col-lf {
-    .title {
-      @apply font-bold text-5xl text-light-50 mb-4;
+    position: relative;
+    box-shadow: -2px 0px 21px 0px rgba(190, 190, 190, 0.56);
+    background-image: linear-gradient(
+      90deg,
+      rgba(57, 0, 133, 1) 0,
+      rgba(57, 0, 133, 1) 0,
+      rgba(136, 91, 255, 1) 100%,
+      rgba(136, 91, 255, 1) 100%
+    );
+    // .title {
+    //   @apply font-bold text-5xl text-light-50 mb-4;
+    // }
+    .group-right-sm {
+      background-image: linear-gradient(
+        90deg,
+        rgba(57, 0, 133, 1) 0,
+        rgba(57, 0, 133, 1) 0,
+        rgba(136, 91, 255, 1) 100%,
+        rgba(136, 91, 255, 1) 100%
+      );
+      border-radius: 50%;
+      width: 42%;
+      height: 70%;
+      top: 0;
+      right: 0;
+    }
+    .group-right-lg {
+      background-image: linear-gradient(
+        90deg,
+        rgba(57, 0, 133, 1) 0,
+        rgba(57, 0, 133, 1) 0,
+        rgba(136, 91, 255, 1) 100%,
+        rgba(136, 91, 255, 1) 100%
+      );
+      border-radius: 50%;
+      height: 84%;
+      width: 93%;
+      bottom: 0;
+      right: 0;
     }
   }
 
   &-col-rt {
-    @apply bg-light-50 flex-col;
+    @apply flex-col;
+    box-shadow: -2px 0px 21px 0px rgba(190, 190, 190, 0.56);
+    background-color: rgba(255, 255, 255, 1);
 
     .title {
       @apply flex items-center justify-center my-5 text-gray-300 space-x-2;

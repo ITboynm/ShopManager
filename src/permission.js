@@ -7,7 +7,7 @@ import store from "./store";
 let hasGetInfo = false;
 let isFirstLogin = 0;
 router.beforeEach(async (to, from, next) => {
-  if (to.path == "/") isFirstLogin++;
+  if (to.path == "/" && isFirstLogin < 2) isFirstLogin++;
   // 显示loading
   showFullLoading();
   const token = operateToken.getToken();
