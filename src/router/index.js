@@ -9,7 +9,6 @@ export const router = createRouter({
 
 // 动态添加路由的方法
 export function addRoutes(menus) {
-  console.log(router);
   // 是否有新路由
   let hasNewRoutes = false;
   const findAndAddRoutesByMenus = (arr) => {

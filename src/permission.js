@@ -11,7 +11,6 @@ router.beforeEach(async (to, from, next) => {
   // 显示loading
   showFullLoading();
   const token = operateToken.getToken();
-  console.log(operateToken.getToken(), to.path);
   //没有登录，强制跳转回首页
   if (!token && to.path != "/login") {
     isFirstLogin != 1 ? notification("请先登录", "error") : "";
@@ -27,10 +26,18 @@ router.beforeEach(async (to, from, next) => {
   // 如果用户登录了，自动获取用户信息，并存储在vuex中
   let hasNewRoutes = false;
   if (token && !hasGetInfo) {
-    const userInfo = await store.dispatch("getUserInfo");
-    hasGetInfo = true;
-    // 动态添加路由
-    hasNewRoutes = addRoutes(userInfo.menus);
+    try {
+      const userInfo = await store.dispatch("getUserInfo");
+      hasGetInfo = true;
+      // 动态添加路由
+      hasNewRoutes = addRoutes(userInfo.menus);
+    } catch (error) {
+      store.dispatch("logout").finally(() => {
+        notification("用户令牌过期", "error");
+        router.push("/login");
+      });
+      return console.log(error);
+    }
   }
   // 设置页面标题
   document.title = to.meta.title ? to.meta.title : "";

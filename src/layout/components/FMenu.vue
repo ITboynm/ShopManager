@@ -22,7 +22,7 @@ const route = useRoute();
 const store = useStore();
 const router = useRouter();
 // 默认选中
-const activePath = ref(store.state.userInfo.menus[0].child[0].frontpath);
+const activePath = ref(store.state.userInfo.menus[0].child[0].frontpath || '');
 watch(
   () => router.currentRoute.value.path,
   (newValue, oldValue) => {

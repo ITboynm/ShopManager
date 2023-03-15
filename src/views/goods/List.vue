@@ -485,7 +485,7 @@ const {
   handleEdit,
   handleSubmit,
 } = useInitForm({
-  text: "管理员",
+  text: "商品",
   createForm: {
     editId: null,
     title: "", //商品名称
