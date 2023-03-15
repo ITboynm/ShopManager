@@ -10,6 +10,7 @@ import { useStore } from "vuex";
 const store = useStore();
 // 创建axios实例对象 添加全局配置
 const service = axios.create({
+  // withCredentials: true, //跨域请求时发送cookie
   baseURL: config.baseApi,
   timeout: 8000,
 });
