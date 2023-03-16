@@ -1,7 +1,8 @@
 import { onMounted, ref, reactive, toRaw, nextTick } from "vue";
 import { notification, xss } from "@/utils/utils";
 // xss逻辑部分
-function useXss(options, params, createForm, formDrawerRef = null) {
+function useXss(options, params = null, createForm, formDrawerRef = null) {
+  if (!params) return true;
   if (options.xss?.openXss) {
     let xssErrorInfo = {
       xssData: null,
@@ -67,7 +68,7 @@ export function useTableInit(options = {}) {
   const getData = async (param = pager, data) => {
     loading.value = true;
     // xss-----------------
-    if (!useXss(options, data, queryform)) return;
+    if (!useXss(options, data, queryform)) return (loading.value = false);
     try {
       const res = await options.queryApi(param, data);
       if (options.onSuccessInit && typeof options.onSuccessInit == "function") {
