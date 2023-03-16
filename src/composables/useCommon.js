@@ -34,6 +34,7 @@ function useXss(options, params = null, createForm, formDrawerRef = null) {
       formDrawerRef && formDrawerRef.value.hideLoading();
       return false;
     }
+    return true;
   } else {
     return true;
   }

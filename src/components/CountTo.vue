@@ -1,5 +1,5 @@
 <template>
-    {{ d.num.toFixed(0) }}
+    {{ parseInt(d.num).toFixed(0) }}
 </template>
 
 <script setup>
