@@ -101,7 +101,9 @@ async function fetchData(api, data, text, unnotification = false) {
     let res;
     const { fetchId, ...param } = data;
     if (fetchId) {
-      param.fetchContent ? res = await api(fetchId, param.fetchContent) : res = await api(fetchId, param);
+      param.fetchContent
+        ? (res = await api(fetchId, param.fetchContent))
+        : (res = await api(fetchId, param));
     } else {
       res = await api(data);
     }
@@ -121,15 +123,103 @@ async function fetchData(api, data, text, unnotification = false) {
 }
 // 将query对象转成url参数
 function queryParams(query) {
-  let q = []
+  let q = [];
   for (const key in query) {
     if (query[key]) {
-      q.push(`${key}=${encodeURIComponent(query[key])}`)
+      q.push(`${key}=${encodeURIComponent(query[key])}`);
     }
   }
-  let r = q.join("&")
-  r = r ? ("?" + r) : ""
-  return r
+  let r = q.join("&");
+  r = r ? "?" + r : "";
+  return r;
+}
+
+// 对象过滤器
+/**
+ *
+ * @param {Object} mainObject -目标对象
+ * @param {Object} filterFunction - 过滤条件
+ * @returns {Object}
+ */
+Object.filter = function (mainObject, filterFunction, filterKey = false) {
+  return Object.keys(mainObject)
+    .filter(function (ObjectKey) {
+      // 过滤条件
+      return filterFunction(filterKey ? ObjectKey : mainObject[ObjectKey]);
+    })
+    .reduce(function (result, ObjectKey) {
+      // 合并对象
+      result[ObjectKey] = mainObject[ObjectKey];
+      return result;
+    }, {});
+};
+
+// xss攻击封装
+function xss(ctx, val) {
+  // 最终返回的信息
+  let info = {
+    xssData: null,
+    xssText: null,
+    // 校验不通过的数组下标
+    xssIndices: [],
+    // 校验不通过的对象属性名
+    xssIndicesObj: [],
+  };
+  let type = typeof val;
+  switch (type) {
+    case "function":
+      // 函数直接报错
+      info.xssData = "传参错误，校验参数不能为函数！";
+      break;
+    case "object":
+      // 分两种 数组 与 对象
+      if (Array.isArray(val)) {
+        // 必须是参数数组
+        let validArray = val.map((item) => {
+          return ctx.$xss(item) || false;
+        });
+        // 提示数组
+        let idx = validArray.indexOf(false);
+        while (idx != -1) {
+          info.xssIndices.push(idx);
+          idx = validArray.indexOf(false);
+        }
+        info.xssIndices.length
+          ? (info.xssText = `位于${info.xssIndices.join(",")}的参数违规！`)
+          : (info.xssData = val);
+      } else {
+        let objData = null;
+        if (val.valid && val.data) {
+          // 过滤出需要校验的字段 val.valid必须是属性值数组
+          let targetData = Object.filter(
+            val.data,
+            function (data) {
+              return val.valid.includes(data);
+            },
+            true
+          );
+          // 校验不通过的字段
+          info.xssIndicesObj = Object.values(targetData).map((item, index) => {
+            if (!ctx.$xss(item)) return Object.keys(targetData)[index];
+          });
+          objData = val.data;
+        } else {
+          for (const key in val) {
+            if (!ctx.$xss(val[key])) info.xssIndicesObj.push(key);
+          }
+          objData = val;
+        }
+        info.xssIndicesObj.length
+          ? (info.xssText = `属性${info.xssIndicesObj.join(",")}违规！`)
+          : (info.xssData = objData);
+      }
+      break;
+    default:
+      ctx.$xss(val) ? (info.xssData = ctx.$xss(val)) : (info.xssText = "非法字符");
+      break;
+  }
+  // 如果传过来的是单个数据
+  return info;
 }
 export {
   useArrayMove,
@@ -143,4 +233,5 @@ export {
   cartesianProductOf,
   toTime,
   fetchData,
+  xss,
 };

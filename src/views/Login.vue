@@ -64,11 +64,23 @@
 </template>
 
 <script setup>
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  reactive,
+  toRaw,
+  onMounted,
+  onBeforeUnmount,
+  getCurrentInstance,
+} from "vue";
 import { addRoutes } from "@/router";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { notification } from "@/utils/utils";
+import { notification, xss } from "@/utils/utils";
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const store = useStore();
 const router = useRouter();
 const formRef = ref(null);
@@ -99,18 +111,25 @@ const onSubmit = () => {
       return false;
     } else {
       loading.value = true;
-      store
-        .dispatch("login", toRaw(form))
-        .then(async (res) => {
-          addRoutes(res.userInfo.menus);
-          setTimeout(() => {
-            router.push("/");
-          }, 500);
-          notification("登录成功");
-        })
-        .finally(() => {
-          loading.value = false;
-        });
+      const { xssData, xssText, xssIndicesObj } = xss(ctx, toRaw(form));
+      if (xssText) {
+        notification(xssText, "error");
+        xssIndicesObj.map((item) => (form[item] = null));
+        loading.value = false;
+      } else {
+        store
+          .dispatch("login", xssData)
+          .then(async (res) => {
+            addRoutes(res.userInfo.menus);
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
+            notification("登录成功");
+          })
+          .finally(() => {
+            loading.value = false;
+          });
+      }
     }
   });
 };

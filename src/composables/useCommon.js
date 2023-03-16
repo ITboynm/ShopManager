@@ -1,5 +1,43 @@
 import { onMounted, ref, reactive, toRaw, nextTick } from "vue";
-import { notification } from "@/utils/utils";
+import { notification, xss } from "@/utils/utils";
+// xss逻辑部分
+function useXss(options, params, createForm, formDrawerRef = null) {
+  if (options.xss?.openXss) {
+    let xssErrorInfo = {
+      xssData: null,
+      xssText: null,
+      xssIndicesObj: null,
+      xssIndices: null,
+    };
+    let xssParmas = null;
+    options.xss.xssValid
+      ? (xssParmas = {
+          valid: options.xss.xssValid,
+          data: params,
+        })
+      : (xssParmas = params);
+    const xssInfo = xss(options.xss.ctx, xssParmas);
+    // 用户需要针对部分字段校验
+    const { xssData, xssText, xssIndicesObj, xssIndices } = xssInfo;
+    if (xssText) {
+      if (
+        options.xss.onXssError &&
+        typeof options.xss.onXssError == "function"
+      ) {
+        Object.assign(xssErrorInfo, xssInfo);
+        options.xss.onXssError(xssErrorInfo);
+      } else {
+        notification(xssInfo.xssText, "error");
+        xssIndicesObj && xssIndicesObj.map((item) => (createForm[item] = null));
+      }
+      formDrawerRef && formDrawerRef.value.hideLoading();
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
 /**
  *
  * @param {*} options
@@ -28,6 +66,8 @@ export function useTableInit(options = {}) {
 
   const getData = async (param = pager, data) => {
     loading.value = true;
+    // xss-----------------
+    if (!useXss(options, data, queryform)) return;
     try {
       const res = await options.queryApi(param, data);
       if (options.onSuccessInit && typeof options.onSuccessInit == "function") {
@@ -247,8 +287,8 @@ export function useInitForm(options = {}) {
 
   // 新增
   const handleCreate = async (row = null, fun) => {
-    if (typeof fun == 'function') {
-      fun(row)
+    if (typeof fun == "function") {
+      fun(row);
     }
     isEdit.value = false;
     resetForm();
@@ -259,8 +299,8 @@ export function useInitForm(options = {}) {
   // 编辑
   const handleEdit = async (row = null, fun) => {
     isEdit.value = true;
-    if (typeof fun == 'function') {
-      fun(row)
+    if (typeof fun == "function") {
+      fun(row);
     }
     resetForm();
     formDrawerRef.value.open();
@@ -278,6 +318,7 @@ export function useInitForm(options = {}) {
   };
   // 提交
   // 提交表单
+
   const handleSubmit = () => {
     DrawerRef.value.validate(async (valid, fields) => {
       if (!valid) return false;
@@ -289,9 +330,11 @@ export function useInitForm(options = {}) {
       } else {
         subBody = createForm;
       }
+      let { editId, ...params } = subBody;
+      // xss-----------------
+      if (!useXss(options, params, createForm, formDrawerRef)) return;
       try {
         let res;
-        let { editId, ...params } = subBody;
         if (!isEdit.value) {
           res = await options.createApi(params);
           if (res) text = "新增";
@@ -301,12 +344,10 @@ export function useInitForm(options = {}) {
           if (res) text = "编辑";
         }
         resetLoading();
-        formDrawerRef.value.hideLoading();
         await options.getData();
         notification(`${text}${options.text}成功`);
       } catch (error) {
         console.log(error);
-        formDrawerRef.value.hideLoading();
         notification(`${text}${options.text}失败`, "error");
         resetLoading();
       }

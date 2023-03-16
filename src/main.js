@@ -8,6 +8,7 @@ import { router } from "./router";
 import store from "./store";
 import App from "./App.vue";
 import mitt from "mitt";
+import myxss from "@/utils/xss";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "./permission";
 import permission from "@/directives/permission";
@@ -18,7 +19,12 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 // vue3.x的全局实例，要挂载在config.globalProperties上
 app.config.globalProperties.$EventBus = new mitt();
-app.config.globalProperties.$windowHeight = window.innerHeight || document.body.clientHeight;
+// 防止xss攻击
+app.config.globalProperties.$xss = (val) => {
+  return myxss.process(val);
+};
+app.config.globalProperties.$windowHeight =
+  window.innerHeight || document.body.clientHeight;
 app.use(router);
 app.use(store);
 app.use(ElementPlus);

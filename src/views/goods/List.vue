@@ -387,7 +387,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, getCurrentInstance } from "vue";
 import goodsApi from "@/api/goods";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
@@ -396,10 +396,15 @@ import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import { tabbars, unitList } from "@/views/goods/parameter";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-import { fetchData } from "@/utils/utils";
+import { fetchData, notification } from "@/utils/utils";
 import Banners from "@/views/goods/Banners.vue";
 import Content from "@/views/goods/Content.vue";
 import Skus from "@/views/goods/Skus.vue";
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const bannersForm = ref(null);
 const contentForm = ref(null);
 const skusForm = ref(null);
@@ -445,6 +450,10 @@ const {
     title: "",
     tab: "all",
     category_id: null,
+  },
+  xss:{
+    openXss:true,
+    ctx
   },
   queryRules: {},
   columns: [
@@ -499,6 +508,18 @@ const {
     stock_display: 1, //库存显示 0隐藏1显示
     min_price: 1, //最低销售价
     min_oprice: 1, //最低原价
+  },
+  // 开启xss过滤
+  xss: {
+    openXss: true,
+    ctx,
+    // 只针对desc字段进行校验
+    xssValid: ["desc"],
+    onXssError: (error) => {
+      error.xssIndicesObj.includes("desc") &&
+        notification("文章描述违规！", "error");
+      error.xssIndicesObj.map((item) => (createForm[item] = null));
+    },
   },
   rules: {},
   createApi: goodsApi.setGoods,
