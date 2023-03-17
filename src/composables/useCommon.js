@@ -6,8 +6,8 @@ function useXss(options, params = null, createForm, formDrawerRef = null) {
   let openXss = true;
   // 对应字段映射
   let validNames = [];
-  if (options.xss.openXss) openXss = options.xss.openXss;
-  if (options.xss.validNames) validNames = options.xss.validNames;
+  if (options.xss?.openXss) openXss = options.xss.openXss;
+  if (options.xss?.validNames) validNames = options.xss.validNames;
   if (options.xss && openXss) {
     let xssErrorInfo = {
       xssData: null,
