@@ -16,7 +16,7 @@ function useXss(options, params = null, createForm, formDrawerRef = null) {
       xssIndices: null,
     };
     let xssParmas = null;
-    options.xss.xssValid.length
+    options.xss?.xssValid?.length
       ? (xssParmas = {
           valid: options.xss.xssValid,
           data: params,
