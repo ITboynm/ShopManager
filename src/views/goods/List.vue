@@ -390,7 +390,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import goodsApi from "@/api/goods";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
@@ -399,10 +399,13 @@ import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import { tabbars, unitList } from "@/views/goods/parameter";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-import { fetchData, notification } from "@/utils/utils";
-import Banners from "@/views/goods/Banners.vue";
-import Content from "@/views/goods/Content.vue";
-import Skus from "@/views/goods/Skus.vue";
+import { fetchData } from "@/utils/utils";
+// import Banners from "@/views/goods/Banners.vue";
+// import Content from "@/views/goods/Content.vue";
+// import Skus from "@/views/goods/Skus.vue";
+const Banners = defineAsyncComponent(() => import("@/views/goods/Banners.vue"));
+const Content = defineAsyncComponent(() => import("@/views/goods/Content.vue"));
+const Skus = defineAsyncComponent(() => import("@/views/goods/Skus.vue"));
 const bannersForm = ref(null);
 const contentForm = ref(null);
 const skusForm = ref(null);

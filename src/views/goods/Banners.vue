@@ -26,10 +26,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from "vue";
-import ChooseImage from "@/components/ChooseImage.vue";
+import { ref, reactive, defineAsyncComponent } from "vue";
+// import ChooseImage from "@/components/ChooseImage.vue";
 import { notification } from "@/utils/utils";
 import goodsApi from "@/api/goods";
+const ChooseImage = defineAsyncComponent(() =>
+  import("@/components/ChooseImage.vue")
+);
 const chosseImageRef = ref(null);
 const dialogVisible = ref(false);
 const bannerFormRef = ref(null);
@@ -61,17 +64,17 @@ const onBannerSubmit = async () => {
 };
 
 const open = async (row) => {
-  row.bannerStatus = true
+  row.bannerStatus = true;
   try {
     goodsId.value = row.id;
     const res = await goodsApi.readGoods(goodsId.value);
     bannerForm.banners = res.goodsBanner.map((item) => item.url);
-    row.bannerStatus = false
+    row.bannerStatus = false;
     dialogVisible.value = true;
   } catch (error) {
     concole.table(error);
     notification("获取轮播图数据失败", "error");
-    row.bannerStatus = false
+    row.bannerStatus = false;
   }
 };
 const handleClose = () => {

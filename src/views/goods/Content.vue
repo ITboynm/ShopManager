@@ -14,11 +14,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from "vue";
+import { ref, reactive, defineAsyncComponent } from "vue";
 import FormDrawer from "@/components/FormDrawer.vue";
-import Editor from "@/components/Editor.vue";
+// import Editor from "@/components/Editor.vue";
 import { notification } from "@/utils/utils";
 import goodsApi from "@/api/goods";
+const Editor = defineAsyncComponent(() =>
+  import("@/components/Editor.vue")
+);
 const formDrawerRef = ref(null);
 const contentForm = reactive({
   content: [],
