@@ -1,5 +1,6 @@
 import { ElNotification, ElMessage, ElMessageBox } from "element-plus";
 import NProgress from "nprogress";
+import myxss from "@/utils/xss";
 // 消息提示
 const notification = (
   message,
@@ -169,7 +170,12 @@ function hasStrOk(val) {
 }
 
 // xss攻击封装
-function xss(ctx, val, validNames = []) {
+function xss(val, validNames = []) {
+  const ctx = {
+    $xss: (val) => {
+      return myxss.process(val);
+    },
+  };
   // 最终返回的信息
   let info = {
     xssData: null,
@@ -234,7 +240,8 @@ function xss(ctx, val, validNames = []) {
               );
             } else {
               errorNames.push(
-                validNames[Object.keys(val).indexOf(item)] || `字段${item}未匹配到映射`
+                validNames[Object.keys(val).indexOf(item)] ||
+                  `字段${item}未匹配到映射`
               );
             }
           });

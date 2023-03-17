@@ -22,7 +22,7 @@ function useXss(options, params = null, createForm, formDrawerRef = null) {
           data: params,
         })
       : (xssParmas = params);
-    const xssInfo = xss(options.xss.ctx, xssParmas, validNames);
+    const xssInfo = xss(xssParmas, validNames);
     // 用户需要针对部分字段校验
     const { xssData, xssText, xssIndicesObj, xssIndices } = xssInfo;
     if (xssText) {

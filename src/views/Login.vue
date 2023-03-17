@@ -70,17 +70,11 @@ import {
   toRaw,
   onMounted,
   onBeforeUnmount,
-  getCurrentInstance,
 } from "vue";
 import { addRoutes } from "@/router";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { notification, xss } from "@/utils/utils";
-const {
-  appContext: {
-    config: { globalProperties: ctx },
-  },
-} = getCurrentInstance();
 const store = useStore();
 const router = useRouter();
 const formRef = ref(null);
@@ -111,7 +105,7 @@ const onSubmit = () => {
       return false;
     } else {
       loading.value = true;
-      const { xssData, xssText, xssIndicesObj } = xss(ctx, toRaw(form), [
+      const { xssData, xssText, xssIndicesObj } = xss(toRaw(form), [
         "用户名",
         "密码",
       ]);

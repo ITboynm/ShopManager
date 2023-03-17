@@ -119,17 +119,11 @@
 </template>
 
 <script setup>
-import { getCurrentInstance } from "vue";
 import skusApi from "@/api/skus";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ListHeader from "@/components/ListHeader.vue";
 import TagInput from "@/components/TagInput.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-const {
-  appContext: {
-    config: { globalProperties: ctx },
-  },
-} = getCurrentInstance();
 const {
   getData,
   multipleTableRef,
@@ -205,8 +199,6 @@ const {
   },
   // 开启xss过滤
   xss: {
-    // 当前this(必传)
-    ctx,
     // 只针对desc与title字段进行校验
     xssValid: ["name"],
     // 报错字段映射

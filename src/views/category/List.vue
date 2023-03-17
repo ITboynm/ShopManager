@@ -112,12 +112,7 @@ import categoryApi from "@/api/category";
 import GoodsDrawer from "@/views/category/components/GoodsDrawer.vue";
 import { cloneDeep } from "lodash";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-import { ref, getCurrentInstance } from "vue";
-const {
-  appContext: {
-    config: { globalProperties: ctx },
-  },
-} = getCurrentInstance();
+import { ref } from "vue";
 const goodsDrawerRef = ref(null);
 const { getData, handleDelete, handleStatusChange, loading, tableData, pager } =
   useTableInit({
@@ -152,8 +147,6 @@ const {
   },
   // 开启xss过滤
   xss: {
-    // 当前this(必传)
-    ctx,
     // 只针对desc与title字段进行校验
     xssValid: ["name"],
     // 报错字段映射

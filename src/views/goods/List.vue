@@ -390,7 +390,7 @@
 </template>
 
 <script setup>
-import { ref, computed, getCurrentInstance } from "vue";
+import { ref, computed } from "vue";
 import goodsApi from "@/api/goods";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ChooseImage from "@/components/ChooseImage.vue";
@@ -403,11 +403,6 @@ import { fetchData, notification } from "@/utils/utils";
 import Banners from "@/views/goods/Banners.vue";
 import Content from "@/views/goods/Content.vue";
 import Skus from "@/views/goods/Skus.vue";
-const {
-  appContext: {
-    config: { globalProperties: ctx },
-  },
-} = getCurrentInstance();
 const bannersForm = ref(null);
 const contentForm = ref(null);
 const skusForm = ref(null);
@@ -456,7 +451,6 @@ const {
   },
   xss: {
     openXss: true,
-    ctx,
   },
   queryRules: {},
   columns: [
@@ -516,13 +510,11 @@ const {
   xss: {
     // 操控开启与关闭xss,不写该属性就是默认开启
     openXss: true,
-    // 当前this(必传)
-    ctx,
     // 只针对desc与title字段进行校验
     xssValid: ["desc", "title"],
     // 报错字段映射
     validNames: ["商品描述", "商品标题"],
-    // 针对校验出错进行处理
+    // 针对校验
     // onXssError: (error) => {
     //   error.xssIndicesObj.map((item) => (createForm[item] = null));
     // },
