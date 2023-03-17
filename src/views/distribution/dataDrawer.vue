@@ -46,7 +46,7 @@
       stripe
       style="width: 100%"
       v-loading="loading"
-      :style="{ height: `${$windowHeight - 60 - 44 - 22 - 240}px` }"
+      :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 240}px` }"
     >
       <template v-if="type === 'user'">
         <el-table-column label="ID" prop="id" align="center" />

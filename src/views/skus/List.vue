@@ -3,7 +3,7 @@
     <el-card
       shadow="never"
       class="border-0 relative"
-      :style="{ height: `${$windowHeight - 60 - 44 - 22}px` }"
+      :style="{ height: `${$windowHeight.value - 60 - 44 - 22}px` }"
     >
       <template #header>
         <div>
@@ -24,7 +24,7 @@
         style="width: 100%"
         v-loading="loading"
         @selection-change="handleSelectionChange"
-        :max-height="$windowHeight - (48 + 80 + 60 + 44 + 42)"
+        :max-height="$windowHeight.value - (48 + 80 + 60 + 44 + 42)"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column
@@ -119,13 +119,17 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { getCurrentInstance } from "vue";
 import skusApi from "@/api/skus";
 import FormDrawer from "@/components/FormDrawer.vue";
 import ListHeader from "@/components/ListHeader.vue";
 import TagInput from "@/components/TagInput.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const {
   getData,
   multipleTableRef,
@@ -198,6 +202,15 @@ const {
         trigger: "blur",
       },
     ],
+  },
+  // 开启xss过滤
+  xss: {
+    // 当前this(必传)
+    ctx,
+    // 只针对desc与title字段进行校验
+    xssValid: ["name"],
+    // 报错字段映射
+    validNames: ["规格名称"],
   },
   createApi: skusApi.setSkus,
   editApi: skusApi.updateSkus,

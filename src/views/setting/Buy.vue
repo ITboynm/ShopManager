@@ -2,7 +2,7 @@
   <div
     v-loading="loading"
     class="bg-white p-4 rounded"
-    :style="{ height: `${$windowHeight - 60 - 44 - 24}px` }"
+    :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }"
   >
     <el-form :model="form" label-width="160px">
       <el-tabs v-model="activeName">

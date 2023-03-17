@@ -33,7 +33,7 @@
       v-loading="loading"
       ref="multipleTableRef"
       @selection-change="handleSelectionChange"
-      :height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)"
+      :height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)"
     >
       <el-table-column type="selection" width="55" />
       <el-table-column label="商品">

@@ -3,7 +3,12 @@ import { notification, xss } from "@/utils/utils";
 // xss逻辑部分
 function useXss(options, params = null, createForm, formDrawerRef = null) {
   if (!params) return true;
-  if (options.xss?.openXss) {
+  let openXss = true;
+  // 对应字段映射
+  let validNames = [];
+  if (options.xss.openXss) openXss = options.xss.openXss;
+  if (options.xss.validNames) validNames = options.xss.validNames;
+  if (options.xss && openXss) {
     let xssErrorInfo = {
       xssData: null,
       xssText: null,
@@ -11,13 +16,13 @@ function useXss(options, params = null, createForm, formDrawerRef = null) {
       xssIndices: null,
     };
     let xssParmas = null;
-    options.xss.xssValid
+    options.xss.xssValid.length
       ? (xssParmas = {
           valid: options.xss.xssValid,
           data: params,
         })
       : (xssParmas = params);
-    const xssInfo = xss(options.xss.ctx, xssParmas);
+    const xssInfo = xss(options.xss.ctx, xssParmas, validNames);
     // 用户需要针对部分字段校验
     const { xssData, xssText, xssIndicesObj, xssIndices } = xssInfo;
     if (xssText) {

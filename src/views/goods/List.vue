@@ -1,5 +1,8 @@
 <template>
-  <div id="goods" :style="{ height: `${$windowHeight - 60 - 44 - 24}px` }">
+  <div
+    id="goods"
+    :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }"
+  >
     <div class="goods-aside">
       <el-tabs
         tab-position="left"
@@ -53,7 +56,7 @@
       <el-card
         shadow="never"
         class="border-0 relative"
-        :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
+        :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 78}px` }"
       >
         <!-- 新增和刷新 -->
         <ListHeader
@@ -122,7 +125,7 @@
           v-loading="loading"
           ref="multipleTableRef"
           @selection-change="handleSelectionChange"
-          :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)"
+          :max-height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)"
         >
           <el-table-column type="selection" width="55" />
           <el-table-column label="商品" width="300">
@@ -451,9 +454,9 @@ const {
     tab: "all",
     category_id: null,
   },
-  xss:{
-    openXss:true,
-    ctx
+  xss: {
+    openXss: true,
+    ctx,
   },
   queryRules: {},
   columns: [
@@ -511,15 +514,18 @@ const {
   },
   // 开启xss过滤
   xss: {
+    // 操控开启与关闭xss,不写该属性就是默认开启
     openXss: true,
+    // 当前this(必传)
     ctx,
-    // 只针对desc字段进行校验
-    xssValid: ["desc"],
-    onXssError: (error) => {
-      error.xssIndicesObj.includes("desc") &&
-        notification("文章描述违规！", "error");
-      error.xssIndicesObj.map((item) => (createForm[item] = null));
-    },
+    // 只针对desc与title字段进行校验
+    xssValid: ["desc", "title"],
+    // 报错字段映射
+    validNames: ["商品描述", "商品标题"],
+    // 针对校验出错进行处理
+    // onXssError: (error) => {
+    //   error.xssIndicesObj.map((item) => (createForm[item] = null));
+    // },
   },
   rules: {},
   createApi: goodsApi.setGoods,

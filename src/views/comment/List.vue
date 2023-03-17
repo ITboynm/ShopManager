@@ -6,10 +6,10 @@
         <el-input v-model="queryform.title" size="small" placeholder="商品标题"></el-input>
       </SearchItem>
     </Search>
-    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }">
+    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 78}px` }">
       <!-- 新增和刷新 -->
       <el-table :data="tableData" row-key="id" stripe style="width: 100%" v-loading="loading"
-        :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)">
+        :max-height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)">
         <el-table-column type="expand">
           <template #default="{ row }">
             <div class="flex pl-18 pr-4">

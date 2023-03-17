@@ -1,6 +1,6 @@
 <template>
   <div id="">
-    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight - 60 - 44 - 22}px` }">
+    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight.value - 60 - 44 - 22}px` }">
       <template #header>
         <div>
           <!-- 新增和刷新 -->
@@ -8,7 +8,7 @@
         </div>
       </template>
       <!-- card body -->
-      <div class="treeBox" :style="{ height: `${$windowHeight - 60 - 44 - 22 - 70 - 55}px` }">
+      <div class="treeBox" :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 70 - 55}px` }">
         <el-tree :data="tableData" :props="{ label: 'name', children: 'child' }" class="custom-tree-node"
           @node-click="handleNodeClick" v-loading="loading" node-key="id" :default-expanded-keys="defaultExpandedKeys">
           <template #default="{ node, data }">

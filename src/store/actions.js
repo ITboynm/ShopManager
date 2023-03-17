@@ -1,6 +1,7 @@
 import adminApi from "@/api/admin";
 import operateToken from "@/utils/auth";
 import { useCookies } from "@vueuse/integrations/useCookies";
+import { notification } from "@/utils/utils";
 const cookies = useCookies(["locale"]);
 export default {
   // 登录
@@ -11,6 +12,7 @@ export default {
       const userInfo = await dispatch("getUserInfo");
       return Promise.resolve({ token, userInfo });
     } catch (error) {
+      notification("登录失败", "error");
       return Promise.reject(error);
     }
   },

@@ -14,12 +14,12 @@
         </SearchItem>
       </template>
     </Search>
-    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }">
+    <el-card shadow="never" class="border-0 relative" :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 78}px` }">
       <!-- 新增和刷新 -->
       <ListHeader layout="create,refresh" @create="handleCreate" @refresh="getData(pager)"></ListHeader>
 
       <el-table :data="tableData" stripe style="width: 100%" v-loading="loading"
-        :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)">
+        :max-height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)">
         <el-table-column label="会员" width="200">
           <template #default="{ row }">
             <div class="flex items-center">

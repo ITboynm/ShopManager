@@ -154,8 +154,22 @@ Object.filter = function (mainObject, filterFunction, filterKey = false) {
     }, {});
 };
 
+// 空值过滤器
+function hasStrOk(val) {
+  // null的情况
+  if (val == null) return false;
+  // undifind情况
+  if (typeof val == "undefined") return false;
+  // 输入空格
+  if (val.replace(/(^s*)|(s*$)/g, "").length == 0) return false;
+  // 字符串空
+  if (val.length == 0) return false;
+  // 没有上述情况
+  return true;
+}
+
 // xss攻击封装
-function xss(ctx, val) {
+function xss(ctx, val, validNames = []) {
   // 最终返回的信息
   let info = {
     xssData: null,
@@ -185,7 +199,7 @@ function xss(ctx, val) {
           idx = validArray.indexOf(false);
         }
         info.xssIndices.length
-          ? (info.xssText = `位于${info.xssIndices.join(",")}的参数违规！`)
+          ? (info.xssText = `位于${info.xssIndices.join(",")}的数据违规！`)
           : (info.xssData = val);
       } else {
         let objData = null;
@@ -199,8 +213,9 @@ function xss(ctx, val) {
             true
           );
           // 校验不通过的字段
-          info.xssIndicesObj = Object.values(targetData).map((item, index) => {
-            if (!ctx.$xss(item)) return Object.keys(targetData)[index];
+          Object.values(targetData).map((item, index) => {
+            if (hasStrOk(item) && !ctx.$xss(item))
+              info.xssIndicesObj.push(Object.keys(targetData)[index]);
           });
           objData = val.data;
         } else {
@@ -209,13 +224,34 @@ function xss(ctx, val) {
           }
           objData = val;
         }
+        // 如果传进来字段映射名
+        let errorNames = [];
+        if (validNames.length && info.xssIndicesObj.length) {
+          info.xssIndicesObj.map((item) => {
+            if (val.valid) {
+              errorNames.push(
+                validNames[val.valid.indexOf(item)] || `字段${item}未匹配到映射`
+              );
+            } else {
+              errorNames.push(
+                validNames[Object.keys(val).indexOf(item)] || `字段${item}未匹配到映射`
+              );
+            }
+          });
+        }
+        let errorText = null;
+        errorNames.length
+          ? (errorText = `${errorNames.join(",")}违规！`)
+          : (errorText = `属性${info.xssIndicesObj.join(",")}违规！`);
         info.xssIndicesObj.length
-          ? (info.xssText = `属性${info.xssIndicesObj.join(",")}违规！`)
+          ? (info.xssText = errorText)
           : (info.xssData = objData);
       }
       break;
     default:
-      ctx.$xss(val) ? (info.xssData = ctx.$xss(val)) : (info.xssText = "非法字符");
+      ctx.$xss(val)
+        ? (info.xssData = ctx.$xss(val))
+        : (info.xssText = "非法字符");
       break;
   }
   // 如果传过来的是单个数据

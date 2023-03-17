@@ -111,7 +111,10 @@ const onSubmit = () => {
       return false;
     } else {
       loading.value = true;
-      const { xssData, xssText, xssIndicesObj } = xss(ctx, toRaw(form));
+      const { xssData, xssText, xssIndicesObj } = xss(ctx, toRaw(form), [
+        "用户名",
+        "密码",
+      ]);
       if (xssText) {
         notification(xssText, "error");
         xssIndicesObj.map((item) => (form[item] = null));

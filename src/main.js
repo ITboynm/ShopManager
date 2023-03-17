@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, ref } from "vue";
 import ElementPlus from "element-plus";
 import "virtual:windi.css";
 import "@/assets/style/reset.css";
@@ -23,8 +23,11 @@ app.config.globalProperties.$EventBus = new mitt();
 app.config.globalProperties.$xss = (val) => {
   return myxss.process(val);
 };
-app.config.globalProperties.$windowHeight =
-  window.innerHeight || document.body.clientHeight;
+const windowHeight = ref(window.innerHeight || document.body.clientHeight);
+window.onresize = function (e) {
+  windowHeight.value = window.innerHeight || document.body.clientHeight;
+};
+app.config.globalProperties.$windowHeight = windowHeight;
 app.use(router);
 app.use(store);
 app.use(ElementPlus);

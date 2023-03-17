@@ -1,5 +1,5 @@
 <template>
-  <div id="" :style="{ height: `${$windowHeight - 60 - 44 - 24}px` }">
+  <div id="" :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }">
     <panel />
     <!-- 搜索 -->
     <Search
@@ -51,7 +51,7 @@
         stripe
         style="width: 100%"
         v-loading="loading"
-        :style="{ height: `${$windowHeight - 60 - 44 - 22 - 260 - 30}px` }"
+        :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 260 - 30}px` }"
       >
         <el-table-column label="ID" prop="id" align="center" />
         <el-table-column label="头像" width="65">

@@ -3,7 +3,7 @@
     <el-card
       shadow="never"
       class="border-0 relative"
-      :style="{ height: `${$windowHeight - 60 - 44 - 22}px` }"
+      :style="{ height: `${$windowHeight.value - 60 - 44 - 22}px` }"
     >
       <template #header>
         <div>
@@ -18,7 +18,7 @@
       <!-- card body -->
       <div
         class="treeBox"
-        :style="{ height: `${$windowHeight - 60 - 44 - 22 - 70 - 55}px` }"
+        :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 70 - 55}px` }"
       >
         <el-tree
           :data="tableData"
@@ -112,7 +112,12 @@ import categoryApi from "@/api/category";
 import GoodsDrawer from "@/views/category/components/GoodsDrawer.vue";
 import { cloneDeep } from "lodash";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
+const {
+  appContext: {
+    config: { globalProperties: ctx },
+  },
+} = getCurrentInstance();
 const goodsDrawerRef = ref(null);
 const { getData, handleDelete, handleStatusChange, loading, tableData, pager } =
   useTableInit({
@@ -144,6 +149,15 @@ const {
   createForm: {
     editId: null,
     name: "",
+  },
+  // 开启xss过滤
+  xss: {
+    // 当前this(必传)
+    ctx,
+    // 只针对desc与title字段进行校验
+    xssValid: ["name"],
+    // 报错字段映射
+    validNames: ["分类名称"],
   },
   createApi: categoryApi.setCategory,
   editApi: categoryApi.updateCategory,

@@ -3,7 +3,7 @@
     <el-card
       shadow="never"
       class="border-0 relative"
-      :style="{ height: `${$windowHeight - 60 - 44 - 22}px` }"
+      :style="{ height: `${$windowHeight.value - 60 - 44 - 22}px` }"
     >
       <template #header>
         <div>
@@ -21,7 +21,7 @@
         stripe
         style="width: 100%"
         v-loading="loading"
-        :max-height="$windowHeight - (48 + 80 + 60 + 44 + 42)"
+        :max-height="$windowHeight.value - (48 + 80 + 60 + 44 + 42)"
       >
         <el-table-column
           v-for="(item, index) in columns"

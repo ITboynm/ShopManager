@@ -1,5 +1,5 @@
 <template>
-  <div id="goods" :style="{ height: `${$windowHeight - 60 - 44 - 24}px` }">
+  <div id="goods" :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }">
     <div class="goods-aside">
       <el-tabs
         tab-position="left"
@@ -69,7 +69,7 @@
       <el-card
         shadow="never"
         class="border-0 relative"
-        :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
+        :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 78}px` }"
       >
         <!-- 新增和刷新 -->
         <ListHeader
@@ -128,7 +128,7 @@
           v-loading="loading"
           ref="multipleTableRef"
           @selection-change="handleSelectionChange"
-          :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)"
+          :max-height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)"
         >
           <el-table-column type="selection" width="55" />
           <el-table-column label="商品" width="340">

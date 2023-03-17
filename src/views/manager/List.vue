@@ -18,7 +18,7 @@
     <el-card
       shadow="never"
       class="border-0 relative"
-      :style="{ height: `${$windowHeight - 60 - 44 - 22 - 78}px` }"
+      :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 78}px` }"
     >
       <!-- 新增和刷新 -->
       <ListHeader
@@ -32,7 +32,7 @@
         stripe
         style="width: 100%"
         v-loading="loading"
-        :max-height="$windowHeight - (60 + 44 + 22 + 78 + 48 + 80)"
+        :max-height="$windowHeight.value - (60 + 44 + 22 + 78 + 48 + 80)"
       >
         <el-table-column label="管理员" width="200">
           <template #default="{ row }">

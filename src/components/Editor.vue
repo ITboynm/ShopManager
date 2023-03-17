@@ -61,8 +61,8 @@ const init = {
   content_css: "/tinymce/skins/content/default/content.min.css",
   menubar: false, // 隐藏菜单栏
   autoresize_bottom_margin: 50,
-  max_height: ctx.$windowHeight - ctx.$windowHeight * 0.25,
-  min_height: ctx.$windowHeight - ctx.$windowHeight * 0.28,
+  max_height: ctx.$windowHeight.value - ctx.$windowHeight.value * 0.25,
+  min_height: ctx.$windowHeight.value - ctx.$windowHeight.value * 0.28,
   // height: 320,
   toolbar_mode: "none",
   plugins:
