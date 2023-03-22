@@ -302,7 +302,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, toRaw } from "vue";
+import { ref, defineAsyncComponent, reactive, toRaw } from "vue";
 import orderApi from "@/api/order";
 import ListHeader from "@/components/ListHeader.vue";
 import Search from "@/components/Search.vue";
@@ -310,9 +310,11 @@ import SearchItem from "@/components/SearchItem.vue";
 import { tabbars } from "@/views/order/parameter";
 import { useTableInit } from "@/composables/useCommon";
 import ExportExcel from "@/views/order/ExportExcel.vue";
-import InfoModal from "@/views/order/InfoModal.vue";
+// import InfoModal from "@/views/order/InfoModal.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import { fetchData, showModal, showPromptModal } from "@/utils/utils";
+const InfoModal = defineAsyncComponent(() => import("@/views/order/InfoModal.vue"));
+
 const formDrawerRef = ref(null);
 // 初始化表格数据、搜索、分页、删除、状态
 const {

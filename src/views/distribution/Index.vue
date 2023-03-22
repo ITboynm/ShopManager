@@ -51,7 +51,9 @@
         stripe
         style="width: 100%"
         v-loading="loading"
-        :style="{ height: `${$windowHeight.value - 60 - 44 - 22 - 260 - 30}px` }"
+        :style="{
+          height: `${$windowHeight.value - 60 - 44 - 22 - 260 - 30}px`,
+        }"
       >
         <el-table-column label="ID" prop="id" align="center" />
         <el-table-column label="头像" width="65">
@@ -137,13 +139,15 @@
 
 <script setup>
 import panel from "@/views/distribution/panel.vue";
-import dataDrawer from "@/views/distribution/dataDrawer.vue";
-import { ref } from "vue";
+// import dataDrawer from "@/views/distribution/dataDrawer.vue";
+import { ref, defineAsyncComponent } from "vue";
 import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import distributionApi from "@/api/distribution";
 import { useTableInit } from "@/composables/useCommon";
-import { fetchData } from "@/utils/utils";
+const dataDrawer = defineAsyncComponent(() =>
+  import("@/views/distribution/dataDrawer.vue")
+);
 
 // 初始化表格数据、搜索、分页、删除、状态
 const {

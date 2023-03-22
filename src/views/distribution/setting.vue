@@ -1,5 +1,5 @@
 <template>
-  <div  class="bg-white p-4 rounded">
+  <div class="bg-white p-4 rounded">
     <el-form :model="form" label-width="160px" v-loading="loading" class="z-0">
       <h5 class="bg-gray-100 p-3 rounded mb-5">基础设置</h5>
       <el-form-item label="分销启用">
@@ -9,7 +9,11 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="分销海报图">
-        <ChooseImage :limit="9" :checkMore="true" v-model:avatar="form.spread_banners" />
+        <ChooseImage
+          :limit="9"
+          :checkMore="true"
+          v-model:avatar="form.spread_banners"
+        />
       </el-form-item>
       <h5 class="bg-gray-100 p-3 rounded mb-5">返佣设置</h5>
       <el-form-item label="一级返佣比例">
@@ -91,11 +95,13 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
 import distributionApi from "@/api/distribution";
-import ChooseImage from "@/components/ChooseImage.vue";
+// import ChooseImage from "@/components/ChooseImage.vue";
 import { fetchData } from "@/utils/utils";
-
+const ChooseImage = defineAsyncComponent(() =>
+  import("@/components/ChooseImage.vue")
+);
 const form = reactive({
   distribution_open: 1, //分销启用:0禁用1启用
   store_first_rebate: 10, //一级返佣比例：0~100

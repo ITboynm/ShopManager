@@ -161,16 +161,16 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 import moment from "moment";
 import adminApi from "@/api/admin";
 import FormDrawer from "@/components/FormDrawer.vue";
-import ChooseImage from "@/components/ChooseImage.vue";
+// import ChooseImage from "@/components/ChooseImage.vue";
 import ListHeader from "@/components/ListHeader.vue";
 import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-
+const ChooseImage = defineAsyncComponent(() => import("@/components/ChooseImage.vue"));
 const selectData = ref([]);
 
 // 初始化表格数据、搜索、分页、删除、状态

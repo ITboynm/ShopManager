@@ -109,10 +109,13 @@
 import ListHeader from "@/components/ListHeader.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import categoryApi from "@/api/category";
-import GoodsDrawer from "@/views/category/components/GoodsDrawer.vue";
+// import GoodsDrawer from "@/views/category/components/GoodsDrawer.vue";
 import { cloneDeep } from "lodash";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-import { ref } from "vue";
+import { ref, defineAsyncComponent } from "vue";
+const GoodsDrawer = defineAsyncComponent(() =>
+  import("@/views/category/components/GoodsDrawer.vue")
+);
 const goodsDrawerRef = ref(null);
 const { getData, handleDelete, handleStatusChange, loading, tableData, pager } =
   useTableInit({
