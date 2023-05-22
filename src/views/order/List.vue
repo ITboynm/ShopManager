@@ -1,5 +1,8 @@
 <template>
-  <div id="goods" :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }">
+  <div
+    id="goods"
+    :style="{ height: `${$windowHeight.value - 60 - 44 - 24}px` }"
+  >
     <div class="goods-aside">
       <el-tabs
         tab-position="left"
@@ -313,7 +316,9 @@ import ExportExcel from "@/views/order/ExportExcel.vue";
 // import InfoModal from "@/views/order/InfoModal.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import { fetchData, showModal, showPromptModal } from "@/utils/utils";
-const InfoModal = defineAsyncComponent(() => import("@/views/order/InfoModal.vue"));
+const InfoModal = defineAsyncComponent(() =>
+  import("@/views/order/InfoModal.vue")
+);
 
 const formDrawerRef = ref(null);
 // 初始化表格数据、搜索、分页、删除、状态
@@ -343,6 +348,10 @@ const {
     endtime: null,
     name: "",
     phone: "",
+  },
+  xss: {
+    xssValid: ["no", "name", "phone"],
+    validNames: ["订单编号", "收货人", "手机号"],
   },
   queryRules: {},
   columns: [

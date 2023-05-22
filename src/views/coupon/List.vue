@@ -269,6 +269,10 @@ const {
     start: "start_time",
     end: "end_time",
   },
+  xss: {
+    xssValid: ["name", "desc"],
+    validNames: ["用户名", "描述"],
+  },
   rules: {
     name: [
       {

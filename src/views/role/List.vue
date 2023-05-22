@@ -224,6 +224,10 @@ const {
     desc: "",
     status: 1,
   },
+  xss:{
+    xssValid: ["name", "desc"],
+    validNames: ["角色名称", "描述"],
+  },
   rules: {
     name: [
       {

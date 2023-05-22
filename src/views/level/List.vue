@@ -151,6 +151,16 @@ const {
         max_price: 0,
         max_times: 0
     },
+     // 开启xss过滤
+  xss: {
+    xssValid: ["name"],
+    // 报错字段映射
+    validNames: ["等级名称"],
+    // 针对校验
+    // onXssError: (error) => {
+    //   error.xssIndicesObj.map((item) => (createForm[item] = null));
+    // },
+  },
     rules: {
         name: [
             {

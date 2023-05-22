@@ -170,7 +170,9 @@ import ListHeader from "@/components/ListHeader.vue";
 import Search from "@/components/Search.vue";
 import SearchItem from "@/components/SearchItem.vue";
 import { useTableInit, useInitForm } from "@/composables/useCommon";
-const ChooseImage = defineAsyncComponent(() => import("@/components/ChooseImage.vue"));
+const ChooseImage = defineAsyncComponent(() =>
+  import("@/components/ChooseImage.vue")
+);
 const selectData = ref([]);
 
 // 初始化表格数据、搜索、分页、删除、状态
@@ -193,6 +195,9 @@ const {
   updateStateApi: adminApi.updateManagerState,
   queryform: {
     keyword: "",
+  },
+  xss: {
+    openXss: true,
   },
   columns: [
     {
@@ -248,7 +253,7 @@ const {
         message: "用户名不能为空",
         trigger: "blur",
       },
-      { min: 3, max: 10, message: "用户名的长度在3~10位", trigger: "blur" },
+      { min: 3, max: 20, message: "用户名的长度在3~10位", trigger: "blur" },
     ],
     password: [
       {
@@ -256,8 +261,12 @@ const {
         message: "用户密码不能为空",
         trigger: "blur",
       },
-      { min: 3, max: 5, message: "密码的长度在3~5位", trigger: "blur" },
+      { min: 3, max: 20, message: "密码的长度在3~5位", trigger: "blur" },
     ],
+  },
+  xss: {
+    xssValid: ["username", "password"],
+    validNames: ["用户名", "密码"],
   },
   createApi: adminApi.setManager,
   editApi: adminApi.updateManager,
