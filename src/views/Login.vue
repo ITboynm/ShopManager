@@ -57,6 +57,9 @@
               >登录
             </el-button>
           </el-form-item>
+          <el-form-item>
+            <ColdBtn class="w-[250px]" @coldClick="coldClick" />
+          </el-form-item>
         </el-form>
       </el-col>
     </el-row>
@@ -64,17 +67,14 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  reactive,
-  toRaw,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
 import { addRoutes } from "@/router";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import ColdBtn from "@/components/ColdBtn.vue";
 import { notification, xss } from "@/utils/utils";
+import { useCookies } from "@vueuse/integrations/useCookies";
+const cookies = useCookies(["locale"]);
 const store = useStore();
 const router = useRouter();
 const formRef = ref(null);
@@ -130,6 +130,15 @@ const onSubmit = () => {
     }
   });
 };
+
+const coldClick = () => {
+  cookies.set(
+    "access-token",
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1UaEVOVUpHTkVNMVFURTRNMEZCTWpkQ05UZzVNRFUxUlRVd1FVSkRNRU13UmtGRVFrRXpSZyJ9.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL3Byb2ZpbGUiOnsiZW1haWwiOiJ6dzE4NTY5MjU0Njc1QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwiaHR0cHM6Ly9hcGkub3BlbmFpLmNvbS9hdXRoIjp7InVzZXJfaWQiOiJ1c2VyLXVDWE1PdTMyQW9GaU5HMTZ1bWplZjN6TyJ9LCJpc3MiOiJodHRwczovL2F1dGgwLm9wZW5haS5jb20vIiwic3ViIjoiYXV0aDB8NjQyMTA4MmE4NTI4YWRlODM4OTkwMzdiIiwiYXVkIjpbImh0dHBzOi8vYXBpLm9wZW5haS5jb20vdjEiLCJodHRwczovL29wZW5haS5vcGVuYWkuYXV0aDBhcHAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTY4NTY4NTY4NywiZXhwIjoxNjg2ODk1Mjg3LCJhenAiOiJwZGxMSVgyWTcyTUlsMnJoTGhURTlWVjliTjkwNWtCaCIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgbW9kZWwucmVhZCBtb2RlbC5yZXF1ZXN0IG9yZ2FuaXphdGlvbi5yZWFkIG9mZmxpbmVfYWNjZXNzIn0.EbeIJXw43E1eTmIFRAviYLIwjDQreD2hKboFB3J-CFfcxPOafagdIpHzDAMt_o4eFDPyPYKt2T_YUt3y6DyOBReXHeOGJesmr70kH4NrmFHEwr8jXWy6j6dFwkLnEFl0eiUzQUIRB7DiU0R8xb7AVeY7_7e1q-sPZkWkQShJBwm8kU232evah6xyE37wKNwFqeS6x7fgFJBGANNU98Dj84jAchOXgzkwi1DCCDHd9jgO0EVnS30G0ANPCIVxN4MkOjPFRHRtNWRpLjeE7Mx03rlIiCTqr-iq61Ki342BBNyXqlsrFvUXbEV9Vh6tGg8CP3Dc7VlVyCE8HwTWASj9aw"
+  );
+  window.open("http://zwnb.cc:8080", "_blank");
+};
+
 // 监听回车事件
 function onKeyUp(e) {
   if (e.key == "Enter") onSubmit();
@@ -146,6 +155,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+.iframe-container {
+  width: 100%;
+  height: 100%;
+}
 .login {
   &-row {
     @apply min-h-screen;

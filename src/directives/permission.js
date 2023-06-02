@@ -2,7 +2,7 @@
  * @Author: “zhouwang”
  * @Date: 2023-04-30 21:58:48
  * @LastEditors: “zhouwang”
- * @LastEditTime: 2023-05-11 15:44:44
+ * @LastEditTime: 2023-06-01 10:57:47
  * @FilePath: \ShopManager\src\directives\permission.js
  * @Description: 权限配置
  *
