@@ -1,6 +1,7 @@
 import { ElNotification, ElMessage, ElMessageBox } from "element-plus";
 import NProgress from "nprogress";
 import myxss from "@/utils/xss";
+import * as XLSX from "xlsx";
 // 消息提示
 const notification = (
   message,
@@ -264,6 +265,157 @@ function xss(val, validNames = []) {
   // 如果传过来的是单个数据
   return info;
 }
+
+// 函数重载
+class MethodOverload {
+  constructor() {
+    this.functions = {};
+  }
+
+  // 添加函数重载
+  overload() {
+    const argTypes = [...arguments].slice(0, -1).join("").toLowerCase();
+    this.functions[argTypes] = arguments[arguments.length - 1];
+  }
+
+  // 调用函数重载
+  callMethod() {
+    const actualArgs = [...arguments]; // 实际传入的参数列表
+    const argTypes = [...arguments]
+      .map((arg) => typeof arg)
+      .join("")
+      .toLowerCase(); // 根据实际参数类型生成标识符
+    const method = this.functions[argTypes];
+    if (typeof method === "function") {
+      return method.apply(this, actualArgs);
+    } else {
+      throw new Error("No matching method found");
+    }
+  }
+}
+
+const myMethod = new MethodOverload();
+// 添加函数重载
+myMethod.overload("string", function (str) {
+  console.log(`String: ${str}`);
+});
+
+myMethod.overload("number", function (num) {
+  console.log(`Number: ${num}`);
+});
+
+myMethod.overload("number", "string", function (number, string) {
+  console.log(`numberstring: ${number}${string}`);
+});
+
+// 导出excel（单导出，多sheet页）
+const exportExcelWithMappings = (sheets, filename) => {
+  const wb = XLSX.utils.book_new();
+
+  sheets.forEach((sheet) => {
+    const { data, name, mappings, columnWidths } = sheet;
+
+    const headers = mappings.map((mapping) => mapping.label);
+    const rows = data.map((item) =>
+      mappings.map((mapping) => item[mapping.field])
+    );
+
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+
+    // 设置列宽和行高
+    mappings.forEach((mapping, columnIndex) => {
+      const mappingWidth = mapping.width;
+      const columnWidth = columnWidths && columnWidths[columnIndex];
+
+      const width = mappingWidth || columnWidth;
+
+      if (width) {
+        const column = XLSX.utils.encode_col(columnIndex);
+        worksheet["!cols"] = worksheet["!cols"] || [];
+        worksheet["!cols"][columnIndex] = { wch: width };
+      }
+
+      if (mapping.height) {
+        const row = 1; // 表头所在行索引
+        const rowIndex = row - 1;
+        worksheet["!rows"] = worksheet["!rows"] || [];
+        worksheet["!rows"][rowIndex] = {
+          hpt: mapping.height,
+          hpx: mapping.height * 20,
+        };
+      }
+    });
+
+    XLSX.utils.book_append_sheet(wb, worksheet, name);
+  });
+
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+
+  if (typeof window !== "undefined") {
+    const isIE = window.navigator.msSaveOrOpenBlob;
+
+    if (isIE) {
+      // 兼容 IE 浏览器
+      const blob = new Blob([s2ab(wbout)], {
+        type: "application/octet-stream",
+      });
+      window.navigator.msSaveOrOpenBlob(blob, `${filename}.xlsx`);
+    } else {
+      // 其他浏览器
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" })
+      );
+      link.download = `${filename}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+};
+
+// 字符串转字节数组
+const s2ab = (s) => {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < s.length; i++) {
+    view[i] = s.charCodeAt(i) & 0xff;
+  }
+  return buf;
+};
+
+// excel导出范例数据
+// const sheets = [
+//   {
+//     name: "Sheet 1",
+//     data: [
+//       { id: 1, username: "user1", mobile: "123456789", nickname: "nickname1" },
+//       { id: 2, username: "user2", mobile: "987654321", nickname: "nickname2" },
+//     ],
+//     mappings: [
+//       { field: "username", label: "用户名", width: 100 },
+//       { field: "mobile", label: "手机号", width: 120 },
+//       { field: "nickname", label: "昵称", width: 80 },
+//     ],
+//   },
+// {
+//     name: "Sheet 2",
+//     data: [
+//       { id: 1, username: "user1", mobile: "123456789", nickname: "nickname1" },
+//       { id: 2, username: "user2", mobile: "987654321", nickname: "nickname2" },
+//     ],
+//     mappings: [
+//       { field: "username", label: "用户名" },
+//       { field: "mobile", label: "手机号", width: 120 },
+//       { field: "nickname", label: "昵称", width: 80 },
+//     ],
+//         columnWidths: [20], // 设置列宽 mappings 未配置就使用这里的，配置了就优先使用mappings
+//         rowHeights: [20, 20], // 设置行高 统一设置一一对应 大概用不上
+//   },
+// ];
+
+// const filename = "excel_file";
+// exportExcelWithMappings(sheets,excel_file)
 export {
   useArrayMove,
   queryParams,
@@ -277,4 +429,7 @@ export {
   toTime,
   fetchData,
   xss,
+  exportExcelWithMappings,
+  MethodOverload,
+  myMethod,
 };

@@ -72,7 +72,7 @@ import { addRoutes } from "@/router";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import ColdBtn from "@/components/ColdBtn.vue";
-import { notification, xss } from "@/utils/utils";
+import { notification, xss, myMethod } from "@/utils/utils";
 import { useCookies } from "@vueuse/integrations/useCookies";
 const cookies = useCookies(["locale"]);
 const store = useStore();
@@ -152,6 +152,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("keyup", onKeyUp, false);
 });
+
+myMethod.callMethod("Hello");
+myMethod.callMethod(123);
+myMethod.callMethod(123, "ppppp");
 </script>
 
 <style scoped lang="scss">
