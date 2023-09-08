@@ -146,7 +146,7 @@ function queryParams(query) {
 Object.filter = function (mainObject, filterFunction, filterKey = false) {
   return Object.keys(mainObject)
     .filter(function (ObjectKey) {
-      // 过滤条件
+      // 过滤条件 filterKey开启键过滤
       return filterFunction(filterKey ? ObjectKey : mainObject[ObjectKey]);
     })
     .reduce(function (result, ObjectKey) {
